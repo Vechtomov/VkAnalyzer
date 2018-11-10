@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using VkAnalyzer.BE;
 
 namespace VkAnalyzer.BL
 {

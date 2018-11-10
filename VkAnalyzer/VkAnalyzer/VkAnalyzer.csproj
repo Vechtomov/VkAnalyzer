@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Worker\VkAnalyzer.BL.csproj" />
+    <ProjectReference Include="..\VkAnalyzer.BL\VkAnalyzer.BL.csproj" />
   </ItemGroup>
 
 </Project>

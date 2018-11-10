@@ -1,4 +1,4 @@
-﻿namespace VkAnalyzer.BL
+﻿namespace VkAnalyzer.BE
 {
     public enum OnlineInfo
     {
