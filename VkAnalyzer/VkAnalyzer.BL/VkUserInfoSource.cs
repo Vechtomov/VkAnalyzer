@@ -8,6 +8,7 @@ using VkNet;
 using VkNet.Enums.Filters;
 using VkNet.Model;
 using VkNet.Model.RequestParams;
+using VkAnalyzer.Interfaces;
 
 namespace VkAnalyzer.BL
 {
@@ -41,11 +42,19 @@ namespace VkAnalyzer.BL
 
         public async Task<IEnumerable<UserOnlineInfo>> GetOnlineInfo(IEnumerable<long> ids)
         {
+            if(ids == null)
+            {
+                return null;
+            }
+
             // Находим пользователя
             var users = await vkApi.Users.GetAsync(ids.ToArray(), ProfileFields.Online | ProfileFields.OnlineMobile | ProfileFields.OnlineApp);
+            var dateTime = DateTime.Now;
+
             return users.Select(u => new UserOnlineInfo
             {
                 Id = u.Id,
+                DateTime = dateTime,
                 OnlineInfo = GetOnlineInfoByUser(u)
             });
         }
@@ -95,15 +104,7 @@ namespace VkAnalyzer.BL
                 var temp = filter.Substring(2);
                 if (long.TryParse(temp, out var id))
                 {
-                    var user = await vkApi.Users.GetAsync(new long[] { id }, ProfileFields.Photo100 | ProfileFields.ScreenName);
-                    return (user.Select(u => new UserInfo
-                    {
-                        Id = u.Id,
-                        FirstName = u.FirstName,
-                        LastName = u.LastName,
-                        ScreenName = u.ScreenName,
-                        Photo = u.Photo100.ToString(),
-                    }), user.Count);
+                    return (await GetUsersInfo(new long[] { id }), 1);
                 }
 
             }
@@ -121,6 +122,19 @@ namespace VkAnalyzer.BL
                 ScreenName = u.ScreenName,
                 Photo = u.Photo100.ToString(),
             }), (int)users.TotalCount);
+        }
+
+        public async Task<IEnumerable<UserInfo>> GetUsersInfo(IEnumerable<long> ids)
+        {
+            var user = await vkApi.Users.GetAsync(ids, ProfileFields.Photo100 | ProfileFields.ScreenName);
+            return user.Select(u => new UserInfo
+            {
+                Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                ScreenName = u.ScreenName,
+                Photo = u.Photo100.ToString(),
+            });
         }
     }
 }

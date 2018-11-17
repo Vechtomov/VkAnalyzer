@@ -5,12 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="VkNet" Version="1.38.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\VkAnalyzer.BE\VkAnalyzer.BE.csproj" />
-    <ProjectReference Include="..\VkAnalyzer.Interfaces\VkAnalyzer.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

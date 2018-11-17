@@ -1,10 +1,12 @@
 ﻿using System;
+using VkAnalyzer.BE;
 
-namespace VkAnalyzer.BE
+namespace VkAnalyzer.DbModels
 {
     public class UserOnlineInfo
     {
-        public long Id { get; set; }
+        public int Id { get; set; }
+        public long UserId { get; set; }
         public DateTime DateTime { get; set; }
         public OnlineInfo OnlineInfo { get; set; }
     }

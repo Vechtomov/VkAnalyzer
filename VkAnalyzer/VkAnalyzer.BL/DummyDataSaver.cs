@@ -1,15 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using VkAnalyzer.BE;
+using VkAnalyzer.Interfaces;
 
 namespace VkAnalyzer.BL
 {
     public class DummyDataSaver : IDataSaver
     {
-        public Task SaveData(IEnumerable<UserOnlineInfo> infos)
+        public void SaveData(IEnumerable<UserOnlineInfo> infos)
         {
-            throw new NotImplementedException();
+        }
+
+        public Task SaveDataAsync(IEnumerable<UserOnlineInfo> infos)
+        {
+            return Task.CompletedTask;
         }
     }
 }

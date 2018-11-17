@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using VkAnalyzer.Models;
-using VkAnalyzer.BL;
+using VkAnalyzer.Interfaces;
 
 namespace VkAnalyzer.Controllers
 {
@@ -17,23 +16,26 @@ namespace VkAnalyzer.Controllers
             userSource = userInfoSource;
         }
 
-        [HttpGet]
-        public async Task<UsersResponse> Users(string filter)
+        [HttpGet("find")]
+        public async Task<BaseResponse<UsersResponse>> FindUser(string filter)
         {
             filter = filter?.Split('/').Last();
             var (users, count) = await userSource.SearchUsers(filter);
             if (users == null)
             {
-                return new UsersResponse
+                return new BaseSuccessResponse<UsersResponse>
                 {
-                    TotalCount = 0,
+                    Data = new UsersResponse(),
                 };
             }
 
-            return new UsersResponse
+            return new BaseSuccessResponse<UsersResponse>
             {
-                TotalCount = count,
-                Users = users
+                Data = new UsersResponse
+                {
+                    TotalCount = count,
+                    Users = users
+                }
             };
         }
     }

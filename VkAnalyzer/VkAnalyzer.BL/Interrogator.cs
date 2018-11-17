@@ -1,62 +1,90 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
+using VkAnalyzer.Interfaces;
 using VkAnalyzer.BE;
 
 namespace VkAnalyzer.BL
 {
-    public class Interrogator
+    public class Interrogator : IInterrogator
     {
         // Кол-во попыток
         const int numberOfAttempts = 3;
+        const int usersCountPerTime = 100;
+        const int timerPeriod = 20 * 1000; // 30 секунд
 
         private IUserInfoSource userInfoSource;
         private IDataSaver dataSaver;
-        private List<long> usersQueue = new List<long>();
-        public bool IsWorking { get; set; }
+        private List<long> usersQueue;
+        private Timer timer;
 
-        public Interrogator(IUserInfoSource userInfoSource, IDataSaver dataSaver)
+        public Interrogator(IUserInfoSource userInfoSource, IDataSaver dataSaver, List<long> users = null)
         {
             this.userInfoSource = userInfoSource;
             this.dataSaver = dataSaver;
+            usersQueue = users ?? new List<long>();
         }
 
-        public async Task Start(CancellationTokenSource cts = null)
+        public Task Start()
+        {
+            timer = new Timer(UpdateInfo, null, 0, timerPeriod);
+            return Task.CompletedTask;
+        }
+
+        private async void UpdateInfo(object state)
         {
             var index = 0;
+            if (usersQueue.Count == 0)
+            {
+                return;
+            }
+
+            var users = usersQueue.ToList();
+            var infos = new List<UserOnlineInfo>();
+
             while (true)
             {
-                if (usersQueue.Count == 0 || (cts != null && cts.IsCancellationRequested))
+                var from = index * usersCountPerTime;
+
+                if (from > usersQueue.Count - 1)
                 {
-                    IsWorking = false;
-                    return;
+                    break;
                 }
 
-                IsWorking = true;
+                var part = await userInfoSource.GetOnlineInfo(users.Skip(from).Take(usersCountPerTime));
+                infos.AddRange(part);
 
-                if (index == usersQueue.Count - 1)
-                {
-                    index = 0;
-                }
-
-                var user = usersQueue[index++];
-
-                IEnumerable<UserOnlineInfo> infos;
-                    infos = await userInfoSource.GetOnlineInfo(usersQueue);
-
-                await dataSaver.SaveData(infos);
-                await Task.Delay(100);
+                index++;
             }
+
+            await dataSaver.SaveDataAsync(infos);
         }
 
-        public void AddUser(long userId)
+        public bool AddUsers(IEnumerable<long> userIds)
         {
-            usersQueue.Add(userId);
+            var isFailed = true;
+
+            foreach (var userId in userIds)
+            {
+                if (usersQueue.Contains(userId))
+                    continue;
+
+                isFailed = false;
+                usersQueue.Add(userId);
+            }
+
+            return !isFailed;
         }
 
-        public void DeleteUser(long userId)
+        public bool RemoveUser(long userId)
         {
-            usersQueue.Remove(userId);
+            return usersQueue.Remove(userId);
+        }
+
+        public void Stop()
+        {
+            timer.Dispose();
         }
     }
 }
