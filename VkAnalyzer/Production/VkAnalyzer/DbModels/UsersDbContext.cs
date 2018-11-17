@@ -17,6 +17,5 @@ namespace VkAnalyzer.DbModels
 
             base.OnConfiguring(builder);
         }
-
     }
 }

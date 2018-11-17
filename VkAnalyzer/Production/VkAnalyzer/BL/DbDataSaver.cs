@@ -6,7 +6,7 @@ using VkAnalyzer.Interfaces;
 
 namespace VkAnalyzer.BL
 {
-    public class DbDataSaver : IDataSaver
+    public class DbDataSaver 
     {
         public DbDataSaver()
         {

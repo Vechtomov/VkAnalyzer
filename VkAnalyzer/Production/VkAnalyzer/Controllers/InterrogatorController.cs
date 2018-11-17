@@ -16,13 +16,13 @@ namespace VkAnalyzer.Controllers
     {
         private readonly IInterrogator interrogator;
         private readonly IUserInfoSource userSource;
-        private readonly IDataReader dataReader;
+        private readonly IUserInfoRepository userRepository;
 
-        public InterrogatorController(IInterrogator interrogator, IUserInfoSource userSource, IDataReader dataReader)
+        public InterrogatorController(IInterrogator interrogator, IUserInfoSource userSource, IUserInfoRepository userRepository)
         {
             this.interrogator = interrogator;
             this.userSource = userSource;
-            this.dataReader = dataReader;
+            this.userRepository = userRepository;
         }
 
         [HttpPost("addUser")]
@@ -68,11 +68,11 @@ namespace VkAnalyzer.Controllers
 
             if (to != null)
             {
-                result = await dataReader.ReadDataAsync(id, dateFrom, to.Value);
+                result = await userRepository.ReadDataAsync(id, dateFrom, to.Value);
             }
             else
             {
-                result = await dataReader.ReadDataByDayAsync(id, dateFrom);
+                result = await userRepository.ReadDataByDayAsync(id, dateFrom);
             }
 
             return new BaseSuccessResponse<UserOnlineData>

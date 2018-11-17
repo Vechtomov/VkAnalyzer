@@ -21,19 +21,14 @@ namespace VkAnalyzer.BL
         /// </summary>
         private VkApi vkApi = new VkApi();
 
-        public VkUserInfoSource()
+        public VkUserInfoSource(VkAnalyzerSettings settings)
         {
-            var lines = File.ReadAllLines("settings.txt");
-            AppId = ulong.Parse(lines[0]);
-        }
-
-        public VkUserInfoSource(string login, string password) : this()
-        {
+            AppId = settings.AppId;
             ApiAuthParams param = new ApiAuthParams
             {
                 ApplicationId = AppId,
-                Login = login,
-                Password = password,
+                Login = settings.VkUserLogin,
+                Password = settings.VkUserPassword,
                 Settings = Settings.All
             };
 
@@ -42,7 +37,7 @@ namespace VkAnalyzer.BL
 
         public async Task<IEnumerable<UserOnlineInfo>> GetOnlineInfo(IEnumerable<long> ids)
         {
-            if(ids == null)
+            if (ids == null)
             {
                 return null;
             }
@@ -72,29 +67,6 @@ namespace VkAnalyzer.BL
                     : online
                         ? OnlineInfo.Online
                         : OnlineInfo.Offline;
-        }
-
-        public async Task<bool> TryInit(string login, string password)
-        {
-            ApiAuthParams param = new ApiAuthParams
-            {
-                ApplicationId = AppId,
-                Login = login,
-                Password = password,
-                Settings = Settings.All
-            };
-
-            try
-            {
-                await vkApi.AuthorizeAsync(param);
-            }
-            catch (Exception)
-            {
-                // log
-                return false;
-            }
-
-            return true;
         }
 
         public async Task<(IEnumerable<UserInfo> users, int count)> SearchUsers(string filter)

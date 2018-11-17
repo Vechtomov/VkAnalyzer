@@ -15,14 +15,14 @@ namespace VkAnalyzer.BL
         const int timerPeriod = 20 * 1000; // 30 секунд
 
         private IUserInfoSource userInfoSource;
-        private IDataSaver dataSaver;
+        private IUserInfoRepository userRepository;
         private List<long> usersQueue;
         private Timer timer;
 
-        public Interrogator(IUserInfoSource userInfoSource, IDataSaver dataSaver, List<long> users = null)
+        public Interrogator(IUserInfoSource userInfoSource, IUserInfoRepository userRepository, List<long> users = null)
         {
             this.userInfoSource = userInfoSource;
-            this.dataSaver = dataSaver;
+            this.userRepository = userRepository;
             usersQueue = users ?? new List<long>();
         }
 
@@ -58,7 +58,7 @@ namespace VkAnalyzer.BL
                 index++;
             }
 
-            await dataSaver.SaveDataAsync(infos);
+            await userRepository.SaveDataAsync(infos);
         }
 
         public bool AddUsers(IEnumerable<long> userIds)

@@ -9,7 +9,7 @@ using VkAnalyzer.Interfaces;
 
 namespace VkAnalyzer.BL
 {
-    public class FileDataReader : IDataReader
+    public class FileDataReader 
     {
         private readonly string directoryPath;
         public FileDataReader(string directoryPath = "")

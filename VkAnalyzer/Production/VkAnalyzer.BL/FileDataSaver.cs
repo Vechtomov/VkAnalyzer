@@ -6,7 +6,7 @@ using VkAnalyzer.Interfaces;
 
 namespace VkAnalyzer.BL
 {
-    public class FileDataSaver : IDataSaver
+    public class FileDataSaver 
     {
         private readonly string path;
 

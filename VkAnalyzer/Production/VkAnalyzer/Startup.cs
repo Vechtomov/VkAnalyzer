@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
+using VkAnalyzer.BE;
 using VkAnalyzer.BL;
 using VkAnalyzer.DbModels;
 using VkAnalyzer.Interfaces;
@@ -22,17 +23,8 @@ namespace VkAnalyzer
 {
     public class Startup
     {
-        private readonly string vkUsersInfoLogin;
-        private readonly string vkUsersInfoPassword;
-        private readonly string fileDataPath;
-
         public Startup(IConfiguration configuration)
         {
-            var lines = File.ReadAllLines("settings.txt");
-            vkUsersInfoLogin = lines[1];
-            vkUsersInfoPassword = lines[2];
-            fileDataPath = lines[3];
-
             Configuration = configuration;
         }
 
@@ -42,10 +34,18 @@ namespace VkAnalyzer
         public void ConfigureServices(IServiceCollection services)
         {
             //services.AddDbContext<UsersDbContext>(o => o.UseSqlServer(string.Format(dbConnectionString, nameof(UsersDbContext))));
-
-            services.AddSingleton<IUserInfoSource, VkUserInfoSource>(s => new VkUserInfoSource(vkUsersInfoLogin, vkUsersInfoPassword));
-            services.AddSingleton<IDataSaver, FileDataSaver>(s => new FileDataSaver(fileDataPath));
-            services.AddSingleton<IDataReader, FileDataReader>(s => new FileDataReader(fileDataPath));
+            services.Configure<VkAnalyzerSettings>(Configuration.GetSection(nameof(VkAnalyzerSettings)));
+            services.Configure<MongoConnectionSettings>(Configuration.GetSection(nameof(MongoConnectionSettings)));
+            var vkSettings = services.BuildServiceProvider()
+                                     .GetRequiredService<IOptions<VkAnalyzerSettings>>()
+                                     .Value;
+            services.AddSingleton<IUserInfoSource, VkUserInfoSource>(x => new VkUserInfoSource(vkSettings));
+            //todo: вынести в mongo репозиторий.
+            services.AddSingleton<IUserInfoRepository, MongoUserInfoRepository>(x =>
+            {
+                var mongoSettings = x.GetService<IOptions<MongoConnectionSettings>>().Value;
+                return new MongoUserInfoRepository(mongoSettings);
+            });
             services.AddSingleton<IInterrogator, Interrogator>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
