@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using VkAnalyzer.BE;
@@ -14,25 +13,23 @@ namespace VkAnalyzer.BL
 {
     public class VkUserInfoSource : IUserInfoSource
     {
-        private ulong AppId;
-
         /// <summary>
         /// API для работы с вк
         /// </summary>
-        private VkApi vkApi = new VkApi();
+        private readonly VkApi _vkApi = new VkApi();
 
         public VkUserInfoSource(VkAnalyzerSettings settings)
         {
-            AppId = settings.AppId;
-            ApiAuthParams param = new ApiAuthParams
+            ulong appId = settings.AppId;
+            var param = new ApiAuthParams
             {
-                ApplicationId = AppId,
+                ApplicationId = appId,
                 Login = settings.VkUserLogin,
                 Password = settings.VkUserPassword,
                 Settings = Settings.All
             };
 
-            vkApi.Authorize(param);
+            _vkApi.Authorize(param);
         }
 
         public async Task<IEnumerable<UserOnlineInfo>> GetOnlineInfo(IEnumerable<long> ids)
@@ -43,18 +40,20 @@ namespace VkAnalyzer.BL
             }
 
             // Находим пользователя
-            var users = await vkApi.Users.GetAsync(ids.ToArray(), ProfileFields.Online | ProfileFields.OnlineMobile | ProfileFields.OnlineApp);
+            var users = await _vkApi.Users.GetAsync(ids.ToArray(), ProfileFields.Online | ProfileFields.OnlineMobile | ProfileFields.OnlineApp | ProfileFields.LastSeen);
             var dateTime = DateTime.Now;
 
             return users.Select(u => new UserOnlineInfo
             {
                 Id = u.Id,
-                DateTime = dateTime,
+                DateTime = GetOnlineInfoByUser(u) == OnlineInfo.Offline && u.LastSeen.Time.HasValue
+                    ? u.LastSeen.Time.Value.ToLocalTime()
+                    : dateTime,
                 OnlineInfo = GetOnlineInfoByUser(u)
             });
         }
 
-        private OnlineInfo GetOnlineInfoByUser(User user)
+        private static OnlineInfo GetOnlineInfoByUser(User user)
         {
             bool online = user.Online.HasValue && user.Online.Value;
             bool onlineMobile = user.OnlineMobile.HasValue && user.OnlineMobile.Value;
@@ -76,14 +75,14 @@ namespace VkAnalyzer.BL
                 var temp = filter.Substring(2);
                 if (long.TryParse(temp, out var id))
                 {
-                    return (await GetUsersInfo(new long[] { id }), 1);
+                    return (await GetUsersInfo(new[] { id }), 1);
                 }
 
             }
-            var users = await vkApi.Users.SearchAsync(new UserSearchParams
+            var users = await _vkApi.Users.SearchAsync(new UserSearchParams
             {
                 Query = filter,
-                Fields = ProfileFields.Photo100 | ProfileFields.ScreenName
+                Fields = ProfileFields.Photo100 | ProfileFields.ScreenName,
             });
 
             return (users.Select(u => new UserInfo
@@ -98,7 +97,7 @@ namespace VkAnalyzer.BL
 
         public async Task<IEnumerable<UserInfo>> GetUsersInfo(IEnumerable<long> ids)
         {
-            var user = await vkApi.Users.GetAsync(ids, ProfileFields.Photo100 | ProfileFields.ScreenName);
+            var user = await _vkApi.Users.GetAsync(ids, ProfileFields.Photo100 | ProfileFields.ScreenName);
             return user.Select(u => new UserInfo
             {
                 Id = u.Id,

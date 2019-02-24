@@ -9,6 +9,16 @@
     {
         public bool Success { get; set; }
         public T Data { get; set; }
+
+        public BaseResponse()
+        {
+                
+        }
+
+        public BaseResponse(T data)
+        {
+            Data = data;
+        }
     }
 
     public class BaseSuccessResponse : BaseResponse
@@ -25,6 +35,11 @@
         {
             Success = true;
         }
+
+        public BaseSuccessResponse(T data) : base(data)
+        {
+            Success = true;
+        }
     }
 
     public class BaseErrorResponse : BaseResponse
@@ -35,13 +50,23 @@
         {
             Success = false;
         }
+
+        public BaseErrorResponse(string error) : this()
+        {
+            Error = error;
+        }
     }
 
     public class BaseErrorResponse<T> : BaseResponse<T>
     {
         public string Error { get; set; }
 
-        public BaseErrorResponse()
+        public BaseErrorResponse(string error)
+        {
+            Error = error;
+        }
+
+        public BaseErrorResponse(T data) : base(data)
         {
             Success = false;
         }

@@ -10,17 +10,17 @@ namespace VkAnalyzer.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserInfoSource userSource;
+        private readonly IUserInfoSource _userSource;
         public UserController(IUserInfoSource userInfoSource)
         {
-            userSource = userInfoSource;
+            _userSource = userInfoSource;
         }
 
         [HttpGet("find")]
         public async Task<BaseResponse<UsersResponse>> FindUser(string filter)
         {
             filter = filter?.Split('/').Last();
-            var (users, count) = await userSource.SearchUsers(filter);
+            var (users, count) = await _userSource.SearchUsers(filter);
             if (users == null)
             {
                 return new BaseSuccessResponse<UsersResponse>

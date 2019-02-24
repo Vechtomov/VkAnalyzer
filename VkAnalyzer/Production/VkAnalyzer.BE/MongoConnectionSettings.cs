@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace VkAnalyzer.BE
+﻿namespace VkAnalyzer.BE
 {
     public class MongoConnectionSettings
     {
