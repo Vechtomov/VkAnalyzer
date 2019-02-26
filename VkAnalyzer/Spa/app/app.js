@@ -25,9 +25,9 @@ import configureStore from './configureStore';
 // moment.updateLocale('ru', ru);
 
 // until better times
-import 'theme/semantic.less';
+// import 'theme/semantic.less';
 
-// import 'semantic-ui-css/semantic.min.css';
+import 'semantic-ui-css/semantic.min.css';
 
 // Observe loading of Open Sans (to remove open sans, remove the <link> tag in
 // the index.html file and this observer)

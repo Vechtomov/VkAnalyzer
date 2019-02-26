@@ -21,7 +21,7 @@ export default class UsersService {
     return request(URL.FIND_USERS, options);
   };
 
-  static addUser = ids => {
+  static addUsers = ids => {
     const options = {
       method: 'POST',
       body: {
@@ -30,5 +30,18 @@ export default class UsersService {
     };
 
     return request(URL.ADD_USER, options);
+  };
+
+  static getData = (id, from, to) => {
+    const options = {
+      method: 'GET',
+      params: {
+        id,
+        from,
+        to,
+      },
+    };
+
+    return request(URL.GET_DATA, options);
   };
 }

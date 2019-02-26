@@ -26,4 +26,14 @@ const makeSelectFoundedUsers = () =>
     substate.get('foundedUsers'),
   );
 
-export { makeSelectHomePage, makeSelectUsers, makeSelectFoundedUsers };
+const makeSelectUserOnlineData = () =>
+  createSelector(selectHomePageDomain, substate =>
+    substate.get('userOnlineData'),
+  );
+
+export {
+  makeSelectHomePage,
+  makeSelectUsers,
+  makeSelectFoundedUsers,
+  makeSelectUserOnlineData,
+};

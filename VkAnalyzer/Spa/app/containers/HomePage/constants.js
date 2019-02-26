@@ -15,3 +15,7 @@ export const FIND_USERS_ERROR = 'app/HomePage/FIND_USERS_ERROR';
 export const ADD_USER = 'app/HomePage/ADD_USER';
 export const ADD_USER_SUCCESS = 'app/HomePage/ADD_USER_SUCCESS';
 export const ADD_USER_ERROR = 'app/HomePage/ADD_USER_ERROR';
+
+export const GET_DATA = 'app/HomePage/GET_DATA';
+export const GET_DATA_SUCCESS = 'app/HomePage/GET_DATA_SUCCESS';
+export const GET_DATA_ERROR = 'app/HomePage/GET_DATA_ERROR';

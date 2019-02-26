@@ -14,6 +14,9 @@ import {
   ADD_USER,
   ADD_USER_SUCCESS,
   ADD_USER_ERROR,
+  GET_DATA,
+  GET_DATA_SUCCESS,
+  GET_DATA_ERROR,
 } from './constants';
 
 export const getUsers = () => ({ type: GET_USERS });
@@ -27,3 +30,7 @@ export const findUsersError = error => ({ type: FIND_USERS_ERROR, error });
 export const addUser = id => ({ type: ADD_USER, id });
 export const addUserSuccess = () => ({ type: ADD_USER_SUCCESS });
 export const addUserError = error => ({ type: ADD_USER_ERROR, error });
+
+export const getData = (id, from, to) => ({ type: GET_DATA, id, from, to });
+export const setData = data => ({ type: GET_DATA_SUCCESS, data });
+export const getDataError = error => ({ type: GET_DATA_ERROR, error });

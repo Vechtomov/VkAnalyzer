@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { Container, Header, Divider } from 'semantic-ui-react';
+import Block from '../../components/Block';
 
 export const MainContainer = styled(Container)`
   padding: 3rem;
@@ -14,4 +15,8 @@ export const SectionsDivider = styled(Divider)`
   &&& {
     font-size: 18px;
   }
+`;
+
+export const OverflowedBlock = styled(Block)`
+  overflow: auto;
 `;

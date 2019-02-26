@@ -13,17 +13,24 @@ import { compose, bindActionCreators } from 'redux';
 
 import injectSaga from 'utils/injectSaga';
 import injectReducer from 'utils/injectReducer';
-import { Button, Grid, Dropdown, Input } from 'semantic-ui-react';
+import { Button, Grid, Dropdown, Input, Loader } from 'semantic-ui-react';
 import {
   makeSelectHomePage,
   makeSelectUsers,
   makeSelectFoundedUsers,
+  makeSelectUserOnlineData,
 } from './selectors';
-import { getUsers, findUsers, addUser } from './actions';
+import { getUsers, findUsers, addUser, getData } from './actions';
 import reducer from './reducer';
 import saga from './saga';
-import { MainContainer, MainTitle, SectionsDivider } from './Wrappers';
+import {
+  MainContainer,
+  MainTitle,
+  SectionsDivider,
+  OverflowedBlock,
+} from './Wrappers';
 import Block from '../../components/Block';
+import OutAges from '../../components/EventChart';
 
 class HomePage extends React.Component {
   state = {
@@ -36,10 +43,12 @@ class HomePage extends React.Component {
   }
 
   selectUser = (e, { value }) => {
-    const { users } = this.props;
+    const { users, getData } = this.props;
+    const user = users.find(user => user.get('id') === value);
     this.setState({
-      selectedUser: users.find(user => user.get('id') === value),
+      selectedUser: user,
     });
+    getData(user.get('id'));
   };
 
   findUsers = (e, data) => {
@@ -59,6 +68,7 @@ class HomePage extends React.Component {
       users,
       foundedUsers,
       addUser,
+      userOnlineData,
     } = this.props;
     const { selectedUser } = this.state;
 
@@ -71,6 +81,8 @@ class HomePage extends React.Component {
           text: `${user.get('firstName')} ${user.get('lastName')}`,
         })),
       );
+
+    const onlineData = userOnlineData.toJS();
 
     return (
       <div>
@@ -85,7 +97,15 @@ class HomePage extends React.Component {
 
           <Grid>
             <Grid.Column width={8}>
-              <Block>Chart</Block>
+              <Block>
+                <Loader active={onlineData.loading} />
+                <Block>
+                  <OutAges />
+                </Block>
+                <OverflowedBlock>
+                  {onlineData.data && JSON.stringify(onlineData.data)}
+                </OverflowedBlock>
+              </Block>
             </Grid.Column>
             <Grid.Column width={8}>
               <Block>
@@ -153,17 +173,20 @@ HomePage.propTypes = {
   homePage: PropTypes.object,
   users: PropTypes.object,
   foundedUsers: PropTypes.object,
+  userOnlineData: PropTypes.object,
 
   // actions
   getUsers: PropTypes.func,
   findUsers: PropTypes.func,
   addUser: PropTypes.func,
+  getData: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
   homePage: makeSelectHomePage(),
   users: makeSelectUsers(),
   foundedUsers: makeSelectFoundedUsers(),
+  userOnlineData: makeSelectUserOnlineData(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -172,6 +195,7 @@ function mapDispatchToProps(dispatch) {
       getUsers,
       findUsers,
       addUser,
+      getData,
     },
     dispatch,
   );
