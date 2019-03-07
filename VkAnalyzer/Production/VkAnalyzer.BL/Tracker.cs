@@ -11,7 +11,7 @@ namespace VkAnalyzer.BL
     public class Tracker : ITracker
     {
         private const int UsersCountPerTime = 1000;
-        private const int TimerPeriod = 20 * 1000; // 20 секунд
+        private const int TimerPeriod = 1000; // 1 секунда
 
         private readonly IUserInfoSource _userInfoSource;
         private readonly IUserInfoRepository _userRepository;

@@ -61,7 +61,12 @@ function* addUserFlow({ id }) {
 
 function* getOnlineDataFlow({ id, from, to }) {
   try {
-    const response = yield call(UsersService.getData, id, from, to);
+    const response = yield call(
+      UsersService.getData,
+      id,
+      from,
+      to,
+    );
     if (response.success) {
       yield put(setData(response.data));
     } else {

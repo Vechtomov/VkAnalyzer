@@ -4,6 +4,6 @@ namespace VkAnalyzer.Models
 {
     public class AddUsersRequest
     {
-        public List<long> Ids { get; set; }
+        public IEnumerable<long> Ids { get; set; }
     }
 }

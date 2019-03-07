@@ -27,10 +27,10 @@ import {
   MainContainer,
   MainTitle,
   SectionsDivider,
-  OverflowedBlock,
+  // OverflowedBlock,
 } from './Wrappers';
 import Block from '../../components/Block';
-import OutAges from '../../components/EventChart';
+import OnlineChart from '../../components/OnlineChart';
 
 class HomePage extends React.Component {
   state = {
@@ -100,11 +100,10 @@ class HomePage extends React.Component {
               <Block>
                 <Loader active={onlineData.loading} />
                 <Block>
-                  <OutAges />
+                  {onlineData.data && (
+                    <OnlineChart data={onlineData.data.onlineInfos} />
+                  )}
                 </Block>
-                <OverflowedBlock>
-                  {onlineData.data && JSON.stringify(onlineData.data)}
-                </OverflowedBlock>
               </Block>
             </Grid.Column>
             <Grid.Column width={8}>
@@ -117,6 +116,7 @@ class HomePage extends React.Component {
                   placeholder="Введите имя"
                   options={usersOptions}
                   onChange={this.selectUser}
+                  selectOnBlur={false}
                 />
               </Block>
               {selectedUser && (

@@ -8,6 +8,7 @@ using VkNet.Enums.Filters;
 using VkNet.Model;
 using VkNet.Model.RequestParams;
 using VkAnalyzer.Interfaces;
+using User = VkNet.Model.User;
 
 namespace VkAnalyzer.BL
 {
@@ -20,13 +21,12 @@ namespace VkAnalyzer.BL
 
         public VkUserInfoSource(VkAnalyzerSettings settings)
         {
-            ulong appId = settings.AppId;
             var param = new ApiAuthParams
             {
-                ApplicationId = appId,
-                Login = settings.VkUserLogin,
+                ApplicationId = settings.AppId,
+				Login = settings.VkUserLogin,
                 Password = settings.VkUserPassword,
-                Settings = Settings.All
+				Settings = Settings.Status
             };
 
             _vkApi.Authorize(param);

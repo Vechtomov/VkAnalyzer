@@ -1,14 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.SpaServices.Extensions;
 using NSwag.AspNetCore;
 using VkAnalyzer.BE;
 using VkAnalyzer.BL;
+using VkAnalyzer.BL.SQL;
 using VkAnalyzer.Extensions;
 using VkAnalyzer.Interfaces;
 
@@ -56,7 +57,7 @@ namespace VkAnalyzer
             {
                 var users = await usersRepository.GetUsersAsync();
 
-                tracker.AddUsers(users);
+                tracker.AddUsers(users.Select(u => u.Id));
                 await tracker.Start();
             });
 

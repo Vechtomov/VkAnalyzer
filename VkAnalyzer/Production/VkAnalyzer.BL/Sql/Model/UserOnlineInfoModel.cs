@@ -1,11 +1,11 @@
 ﻿using System;
 using VkAnalyzer.BE;
 
-namespace VkAnalyzer.DbModels
+namespace VkAnalyzer.BL.Sql
 {
-    public class UserOnlineInfo
+    public class UserOnlineInfoModel
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public long UserId { get; set; }
         public DateTime DateTime { get; set; }
         public OnlineInfo OnlineInfo { get; set; }

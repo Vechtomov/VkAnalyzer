@@ -20,35 +20,47 @@ const outageEvents = [
   {
     startTime: '2015-03-08T09:00:00Z',
     endTime: '2015-03-22T14:00:00Z',
-    title: 'ANL Scheduled Maintenance',
-    description: 'ANL will be switching border routers...',
-    completed: true,
-    external_ticket: '',
-    esnet_ticket: 'ESNET-20150302-002',
-    organization: 'ANL',
-    type: 'Planned',
+    type: 'OnlineMobile',
   },
   {
     startTime: '2015-04-01T03:30:00Z',
     endTime: '2015-04-02T16:50:00Z',
-    title: 'STAR-CR5 < 100 ge 06519 > ANL  - Outage',
-    description: 'The listed circuit was unavailable due to bent pins.',
-    completed: true,
-    external_ticket: '3576:144',
-    esnet_ticket: 'ESNET-20150421-013',
-    organization: 'Internet2 / Level 3',
-    type: 'Unplanned',
+    type: 'Offline',
   },
   {
-    startTime: '2015-04-22T03:30:00Z',
-    endTime: '2015-04-22T13:00:00Z',
-    description: 'At 13:33 pacific circuit 06519 went down.',
-    title: 'STAR-CR5 < 100 ge 06519 > ANL  - Outage',
-    completed: true,
-    external_ticket: '',
-    esnet_ticket: 'ESNET-20150421-013',
-    organization: 'Internet2 / Level 3',
-    type: 'Unplanned',
+    startTime: '2015-04-23T03:30:00Z',
+    endTime: '2015-04-23T13:00:00Z',
+    type: 'Online',
+  },
+  {
+    startTime: '2015-04-24T03:30:00Z',
+    endTime: '2015-04-24T16:50:00Z',
+    type: 'Offline',
+  },
+  {
+    startTime: '2015-04-25T03:30:00Z',
+    endTime: '2015-04-25T13:00:00Z',
+    type: 'Online',
+  },
+  {
+    startTime: '2015-04-26T03:30:00Z',
+    endTime: '2015-04-26T16:50:00Z',
+    type: 'Offline',
+  },
+  {
+    startTime: '2015-04-27T03:30:00Z',
+    endTime: '2015-04-27T13:00:00Z',
+    type: 'Online',
+  },
+  {
+    startTime: '2015-04-29T03:30:00Z',
+    endTime: '2015-04-29T16:50:00Z',
+    type: 'Offline',
+  },
+  {
+    startTime: '2015-04-30T03:30:00Z',
+    endTime: '2015-04-30T13:00:00Z',
+    type: 'Online',
   },
 ];
 
@@ -113,13 +125,13 @@ class OutAges extends React.Component {
             enablePanZoom
             onTimeRangeChanged={this.handleTimeRangeChange}
           >
-            <ChartRow height="30">
+            <ChartRow height="60">
               <Charts>
                 <EventChart
                   series={series}
                   size={45}
                   style={outageEventStyleFunc}
-                  label={e => e.get('title')}
+                  // label={e => e.get('title')}
                 />
               </Charts>
             </ChartRow>

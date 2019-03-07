@@ -7,8 +7,10 @@ namespace VkAnalyzer.BE
     {
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public long Id { get; set; }
+
         [BsonRepresentation(MongoDB.Bson.BsonType.DateTime)]
         public DateTime DateTime { get; set; }
+
         [BsonRepresentation(MongoDB.Bson.BsonType.Binary)]
         public OnlineInfo OnlineInfo { get; set; }
     }
