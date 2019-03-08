@@ -11,9 +11,23 @@ import { Helmet } from 'react-helmet';
 import { createStructuredSelector } from 'reselect';
 import { compose, bindActionCreators } from 'redux';
 
-import injectSaga from 'utils/injectSaga';
-import injectReducer from 'utils/injectReducer';
-import { Button, Grid, Dropdown, Input, Loader } from 'semantic-ui-react';
+// import Calendar from 'react-calendar';
+import DatePicker, { registerLocale } from 'react-datepicker';
+
+import 'react-datepicker/dist/react-datepicker.css';
+import ru from 'date-fns/locale/ru';
+registerLocale('ru', ru);
+
+import {
+  Button,
+  Grid,
+  Dropdown,
+  Input,
+  Loader,
+  GridColumn,
+} from 'semantic-ui-react';
+import injectReducer from '../../utils/injectReducer';
+import injectSaga from '../../utils/injectSaga';
 import {
   makeSelectHomePage,
   makeSelectUsers,
@@ -31,10 +45,13 @@ import {
 } from './Wrappers';
 import Block from '../../components/Block';
 import OnlineChart from '../../components/OnlineChart';
+import UserInfo from '../../components/UserInfo';
 
 class HomePage extends React.Component {
   state = {
     selectedUser: null,
+    from: null,
+    to: null,
   };
 
   componentDidMount() {
@@ -69,8 +86,9 @@ class HomePage extends React.Component {
       foundedUsers,
       addUser,
       userOnlineData,
+      getData,
     } = this.props;
-    const { selectedUser } = this.state;
+    const { selectedUser, from, to } = this.state;
 
     const usersOptions =
       users &&
@@ -98,16 +116,6 @@ class HomePage extends React.Component {
           <Grid>
             <Grid.Column width={8}>
               <Block>
-                <Loader active={onlineData.loading} />
-                <Block>
-                  {onlineData.data && (
-                    <OnlineChart data={onlineData.data.onlineInfos} />
-                  )}
-                </Block>
-              </Block>
-            </Grid.Column>
-            <Grid.Column width={8}>
-              <Block>
                 <Dropdown
                   selection
                   search
@@ -119,24 +127,80 @@ class HomePage extends React.Component {
                   selectOnBlur={false}
                 />
               </Block>
-              {selectedUser && (
-                <Block>
-                  {selectedUser.get('firstName')} {selectedUser.get('lastName')}
-                </Block>
-              )}
+            </Grid.Column>
+            <Grid.Column width={8}>
+              {selectedUser && <UserInfo user={selectedUser} />}
             </Grid.Column>
           </Grid>
+          <Block>
+            <Loader active={onlineData.loading} />
+            {onlineData.data && (
+              <div>
+                <Block>
+                  <OnlineChart data={onlineData.data.onlineInfos} />
+                </Block>
+                <Block>
+                  <DatePicker
+                    selected={from}
+                    onChange={date =>
+                      this.setState({
+                        from: date,
+                      })
+                    }
+                    dateFormat="dd.MM.YYYY HH:mm"
+                    locale="ru"
+                    placeholderText="От"
+                    showTimeSelect
+                    timeFormat="HH:mm"
+                    timeIntervals={15}
+                    timeCaption="Время"
+                    isClearable
+                  />
+
+                  <DatePicker
+                    selected={to}
+                    onChange={date =>
+                      this.setState({
+                        to: date,
+                      })
+                    }
+                    dateFormat="dd.MM.YYYY HH:mm"
+                    locale="ru"
+                    placeholderText="До"
+                    showTimeSelect
+                    timeFormat="HH:mm"
+                    timeIntervals={15}
+                    timeCaption="Время"
+                    isClearable
+                  />
+
+                  <Button
+                    onClick={() =>
+                      getData(
+                        selectedUser.get('id'),
+                        from && Math.round(from),
+                        to && Math.round(to),
+                      )
+                    }
+                    size="small"
+                  >
+                    Обновить
+                  </Button>
+                </Block>
+              </div>
+            )}
+          </Block>
 
           <SectionsDivider horizontal>Добавить пользователя</SectionsDivider>
 
           <Grid>
-            <Grid.Column width={8}>
+            <Grid.Column computer={8} tablet={16}>
               <Block>Вставьте ссылку</Block>
               <Block>
                 <Input fluid onChange={this.findUsers} />
               </Block>
             </Grid.Column>
-            <Grid.Column width={8}>
+            <Grid.Column computer={8} tablet={16}>
               {foundedUsers &&
                 foundedUsers.map(user => (
                   <Block key={user.get('id')}>

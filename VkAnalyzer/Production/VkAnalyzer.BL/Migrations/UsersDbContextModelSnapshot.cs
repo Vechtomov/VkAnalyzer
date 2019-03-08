@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VkAnalyzer.BL.SQL;
 
 namespace VkAnalyzer.BL.Migrations
@@ -50,6 +51,8 @@ namespace VkAnalyzer.BL.Migrations
                     b.Property<long>("UserId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DateTime");
 
                     b.HasIndex("UserId");
 

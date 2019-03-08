@@ -5,9 +5,29 @@ namespace VkAnalyzer.Interfaces
 {
     public interface ITracker
     {
+		/// <summary>
+		/// Start tracker
+		/// </summary>
+		/// <returns></returns>
         Task Start();
-        bool AddUsers(IEnumerable<long> ids);
+
+		/// <summary>
+		/// Adding users in tracker
+		/// </summary>
+		/// <param name="ids"></param>
+		/// <returns></returns>
+		bool AddUsers(IEnumerable<long> ids);
+
+		/// <summary>
+		/// Remove user from tracker
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
         bool RemoveUser(long id);
+
+		/// <summary>
+		/// Stop tracker
+		/// </summary>
         void Stop();
     }
 }

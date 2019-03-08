@@ -37,6 +37,11 @@ namespace VkAnalyzer.BL.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserOnlineInfos_DateTime",
+                table: "UserOnlineInfos",
+                column: "DateTime");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserOnlineInfos_UserId",
                 table: "UserOnlineInfos",
                 column: "UserId");

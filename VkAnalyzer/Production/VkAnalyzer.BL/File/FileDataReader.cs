@@ -6,15 +6,24 @@ using VkAnalyzer.BE;
 
 namespace VkAnalyzer.BL.File
 {
-    public class FileDataReader 
+	/// <summary />
+	public class FileDataReader 
     {
         private readonly string _directoryPath;
-        public FileDataReader(string directoryPath = "")
+
+	    /// <summary />
+	    /// <param name="directoryPath"></param>
+	    public FileDataReader(string directoryPath = "")
         {
             _directoryPath = directoryPath;
         }
 
-        public UserOnlineData ReadData(long id, DateTime from, DateTime to)
+	    /// <summary />
+	    /// <param name="id"></param>
+	    /// <param name="from"></param>
+	    /// <param name="to"></param>
+	    /// <returns></returns>
+	    public UserOnlineData ReadData(long id, DateTime from, DateTime to)
         {
             var result = new List<DateOnline>();
 
@@ -35,7 +44,11 @@ namespace VkAnalyzer.BL.File
             return new UserOnlineData { Id = id, OnlineInfos = result };
         }
 
-        public UserOnlineData ReadDataByDay(long id, DateTime day)
+	    /// <summary />
+	    /// <param name="id"></param>
+	    /// <param name="day"></param>
+	    /// <returns></returns>
+	    public UserOnlineData ReadDataByDay(long id, DateTime day)
         {
             var directory = $"{_directoryPath}\\{id}\\{day.Year}\\{day.Month}";
             var path = $"{directory}\\{day.Day}.txt";
@@ -52,8 +65,12 @@ namespace VkAnalyzer.BL.File
             };
         }
 
-
-        public async Task<UserOnlineData> ReadDataAsync(long id, DateTime from, DateTime to)
+	    /// <summary />
+	    /// <param name="id"></param>
+	    /// <param name="from"></param>
+	    /// <param name="to"></param>
+	    /// <returns></returns>
+	    public async Task<UserOnlineData> ReadDataAsync(long id, DateTime from, DateTime to)
         {
             var result = new List<DateOnline>();
 
@@ -76,7 +93,11 @@ namespace VkAnalyzer.BL.File
             return new UserOnlineData { Id = id, OnlineInfos = result };
         }
 
-        public async Task<UserOnlineData> ReadDataByDayAsync(long id, DateTime day)
+	    /// <summary />
+	    /// <param name="id"></param>
+	    /// <param name="day"></param>
+	    /// <returns></returns>
+	    public async Task<UserOnlineData> ReadDataByDayAsync(long id, DateTime day)
         {
             var directory = $"{_directoryPath}\\{id}\\{day.Year}\\{day.Month}";
             var path = $"{directory}\\{day.Day}.txt";

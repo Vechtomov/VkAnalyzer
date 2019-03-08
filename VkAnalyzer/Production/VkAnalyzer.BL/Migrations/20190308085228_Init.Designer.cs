@@ -10,7 +10,7 @@ using VkAnalyzer.BL.SQL;
 namespace VkAnalyzer.BL.Migrations
 {
     [DbContext(typeof(UsersDbContext))]
-    [Migration("20190307142957_Init")]
+    [Migration("20190308085228_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,6 +53,8 @@ namespace VkAnalyzer.BL.Migrations
                     b.Property<long>("UserId");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DateTime");
 
                     b.HasIndex("UserId");
 

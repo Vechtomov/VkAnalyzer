@@ -7,14 +7,21 @@ using VkAnalyzer.Interfaces;
 
 namespace VkAnalyzer.BL
 {
-    public class DummyUsersInfoSource : IUserInfoSource
+	/// <summary />
+	public class DummyUsersInfoSource : IUserInfoSource
     {
-        public Task<(IEnumerable<UserInfo> users, int count)> SearchUsers(string filter)
-        {
-            return Task.FromResult((Enumerable.Empty<UserInfo>(), 0));
+
+		public Task<(IEnumerable<UserInfo> users, int count)> SearchUsers(string filter)
+		{
+	        return Task.FromResult((Enumerable.Empty<UserInfo>(), 0));
         }
 
-        public Task<IEnumerable<UserOnlineInfo>> GetOnlineInfo(IEnumerable<long> ids)
+        /// <summary>
+		/// 
+		/// </summary>
+		/// <param name="ids"></param>
+		/// <returns></returns>
+		public Task<IEnumerable<UserOnlineInfo>> GetOnlineInfo(IEnumerable<long> ids)
         {
             return Task.FromResult(ids.Select(id => new UserOnlineInfo()
             {
@@ -24,6 +31,11 @@ namespace VkAnalyzer.BL
             }));
         }
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="ids"></param>
+		/// <returns></returns>
         public Task<IEnumerable<UserInfo>> GetUsersInfo(IEnumerable<long> ids)
         {
             return Task.FromResult(ids.Select(id => new UserInfo()

@@ -70,6 +70,9 @@ namespace VkAnalyzer.BL
 
         public async Task<(IEnumerable<UserInfo> users, int count)> SearchUsers(string filter)
         {
+	        if (string.IsNullOrEmpty(filter))
+		        return (null, 0);
+
             if (filter.StartsWith("id"))
             {
                 var temp = filter.Substring(2);

@@ -16,6 +16,39 @@ import {
   GET_DATA_SUCCESS,
 } from './constants';
 
+const mapOnlineData = infos => {
+  if (!infos || infos.length === 0) return infos;
+
+  let startTime = null;
+  let endTime = null;
+  let ranges = [];
+
+  // заносим в массив все отрезки
+  for (let i = 0; i < infos.length - 1; i += 1) {
+    startTime = infos[i].date;
+    endTime = infos[i + 1].date;
+
+    ranges.push({
+      startTime,
+      endTime,
+      type: infos[i].onlineInfo,
+    });
+  }
+
+  startTime = new Date(endTime);
+
+  ranges.push({
+    startTime,
+    endTime: new Date(),
+    type: infos[infos.length - 1].onlineInfo,
+  });
+
+  // удаляем оффлайн отрезки
+  ranges = ranges.filter(range => range.type !== 1);
+
+  return ranges;
+};
+
 export const initialState = fromJS({
   loading: false,
   error: null,
@@ -57,7 +90,13 @@ function homePageReducer(state = initialState, action) {
       return state
         .setIn(['userOnlineData', 'loading'], false)
         .setIn(['userOnlineData', 'error'], null)
-        .setIn(['userOnlineData', 'data'], fromJS(action.data));
+        .setIn(
+          ['userOnlineData', 'data'],
+          fromJS({
+            ...action.data,
+            onlineInfos: mapOnlineData(action.data.onlineInfos),
+          }),
+        );
 
     default:
       return state;

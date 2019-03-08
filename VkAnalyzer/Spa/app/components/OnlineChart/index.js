@@ -43,35 +43,8 @@ class OnlineChart extends React.Component {
     this.setState({ timerange });
   };
 
-  mapOnlineInfosToSeries = infos => {
-    let startTime = null;
-    let endTime = null;
-    let ranges = [];
-
-    // заносим в массив все отрезки
-    for (let i = 0; i < infos.length - 1; i += 1) {
-      startTime = infos[i].date;
-      endTime = infos[i + 1].date;
-
-      ranges.push({
-        startTime,
-        endTime,
-        type: infos[i].onlineInfo,
-      });
-    }
-
-    startTime = new Date(endTime);
-
-    ranges.push({
-      startTime,
-      endTime: new Date(),
-      type: infos[infos.length - 1].onlineInfo,
-    });
-
-    // удаляем оффлайн отрезки
-    ranges = ranges.filter(range => range.type !== 1);
-
-    ranges = ranges.map(
+  mapOnlineInfosToSeries = ranges => {
+    const timeRanges = ranges.map(
       ({ startTime, endTime, ...data }) =>
         new TimeRangeEvent(
           new TimeRange(new Date(startTime), new Date(endTime)),
@@ -79,17 +52,9 @@ class OnlineChart extends React.Component {
         ),
     );
 
-    const series = new TimeSeries({ name: 'online', events: ranges });
+    const series = new TimeSeries({ name: 'online', events: timeRanges });
     return series;
   };
-
-  componentDidUpdate(prevProps) {
-    const { data } = this.props;
-
-    if (prevProps.data === data) return;
-
-    this.setSeries(this.mapOnlineInfosToSeries(data));
-  }
 
   setSeries = series => {
     this.setState({ timerange: series.timerange() });
@@ -100,6 +65,11 @@ class OnlineChart extends React.Component {
     const { data } = this.props;
 
     if (!data) return null;
+
+    if (data.length === 0)
+      return (
+        <div>В указанный промежуток времени пользователь не был в сети.</div>
+      );
 
     const series = this.mapOnlineInfosToSeries(data);
     timerange = timerange || series.timerange();

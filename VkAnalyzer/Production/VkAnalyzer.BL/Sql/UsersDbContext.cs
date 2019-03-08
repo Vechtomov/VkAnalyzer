@@ -17,6 +17,10 @@ namespace VkAnalyzer.BL.SQL
 
 			modelBuilder.Entity<UserOnlineInfoModel>()
 				.HasIndex(b => b.UserId);
+
+			modelBuilder.Entity<UserOnlineInfoModel>()
+				.HasIndex(b => b.DateTime);
+				
 		}
 
 		public UsersDbContext(DbContextOptions<UsersDbContext> options) : base(options)
