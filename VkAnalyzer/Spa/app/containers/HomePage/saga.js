@@ -1,4 +1,5 @@
-import { call, put, takeLatest } from 'redux-saga/effects';
+import { call, put, takeLatest, fork, take, cancel } from 'redux-saga/effects';
+import { delay } from 'redux-saga';
 import { GET_USERS, FIND_USERS, ADD_USER, GET_DATA } from './constants';
 import {
   setUsers,
@@ -13,10 +14,39 @@ import {
 import UsersService from '../../services/users';
 
 export default function* defaultSaga() {
+  yield fork(commonRequests);
+  yield fork(watchInput);
+}
+
+function* commonRequests() {
   yield takeLatest(GET_USERS, getUsersFlow);
-  yield takeLatest(FIND_USERS, findUsersFlow);
   yield takeLatest(ADD_USER, addUserFlow);
   yield takeLatest(GET_DATA, getOnlineDataFlow);
+}
+
+function* watchInput() {
+  let task;
+  while (true) {
+    const { text } = yield take(FIND_USERS);
+    if (task) {
+      yield cancel(task);
+    }
+    task = yield fork(findUsersFlow, text);
+  }
+}
+
+function* findUsersFlow(text) {
+  try {
+    yield delay(2000);
+    const response = yield call(UsersService.findUsers, text);
+    if (response.success) {
+      yield put(findUsersSuccess(response.data));
+    } else {
+      yield put(findUsersError(response.errorMessage));
+    }
+  } catch (error) {
+    yield put(findUsersError(error.message));
+  }
 }
 
 function* getUsersFlow() {
@@ -29,19 +59,6 @@ function* getUsersFlow() {
     }
   } catch (error) {
     yield put(getUsersError(error.message));
-  }
-}
-
-function* findUsersFlow({ text }) {
-  try {
-    const response = yield call(UsersService.findUsers, text);
-    if (response.success) {
-      yield put(findUsersSuccess(response.data));
-    } else {
-      yield put(findUsersError(response.errorMessage));
-    }
-  } catch (error) {
-    yield put(findUsersError(error.message));
   }
 }
 

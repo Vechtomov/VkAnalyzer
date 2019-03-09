@@ -18,14 +18,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import ru from 'date-fns/locale/ru';
 registerLocale('ru', ru);
 
-import {
-  Button,
-  Grid,
-  Dropdown,
-  Input,
-  Loader,
-  GridColumn,
-} from 'semantic-ui-react';
+import { Button, Grid, Dropdown, Input, Loader } from 'semantic-ui-react';
 import injectReducer from '../../utils/injectReducer';
 import injectSaga from '../../utils/injectSaga';
 import {
@@ -41,7 +34,9 @@ import {
   MainContainer,
   MainTitle,
   SectionsDivider,
-  // OverflowedBlock,
+  DatePickerWrapper,
+  ChooseDateItemWrapper,
+  ChartWrapper,
 } from './Wrappers';
 import Block from '../../components/Block';
 import OnlineChart from '../../components/OnlineChart';
@@ -114,82 +109,82 @@ class HomePage extends React.Component {
           <SectionsDivider horizontal>Статистика</SectionsDivider>
 
           <Grid>
-            <Grid.Column width={8}>
-              <Block>
-                <Dropdown
-                  selection
-                  search
-                  fluid
-                  loading={loading}
-                  placeholder="Введите имя"
-                  options={usersOptions}
-                  onChange={this.selectUser}
-                  selectOnBlur={false}
-                />
-              </Block>
+            <Grid.Column computer={8} mobile={16}>
+              <Dropdown
+                selection
+                search
+                fluid
+                loading={loading}
+                placeholder="Введите имя"
+                options={usersOptions}
+                onChange={this.selectUser}
+                selectOnBlur={false}
+              />
             </Grid.Column>
-            <Grid.Column width={8}>
+            <Grid.Column computer={8} mobile={16}>
               {selectedUser && <UserInfo user={selectedUser} />}
             </Grid.Column>
           </Grid>
-          <Block>
+          <div>
             <Loader active={onlineData.loading} />
             {onlineData.data && (
               <div>
-                <Block>
+                <ChartWrapper>
                   <OnlineChart data={onlineData.data.onlineInfos} />
-                </Block>
-                <Block>
-                  <DatePicker
-                    selected={from}
-                    onChange={date =>
-                      this.setState({
-                        from: date,
-                      })
-                    }
-                    dateFormat="dd.MM.YYYY HH:mm"
-                    locale="ru"
-                    placeholderText="От"
-                    showTimeSelect
-                    timeFormat="HH:mm"
-                    timeIntervals={15}
-                    timeCaption="Время"
-                    isClearable
-                  />
+                </ChartWrapper>
+                <div>
+                  <ChooseDateItemWrapper>
+                    <DatePickerWrapper>
+                      <DatePicker
+                        selected={from}
+                        onChange={date => this.setState({ from: date })}
+                        dateFormat="dd.MM.YYYY HH:mm"
+                        locale="ru"
+                        placeholderText="От"
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        timeCaption="Время"
+                        isClearable
+                      />
+                    </DatePickerWrapper>
+                  </ChooseDateItemWrapper>
 
-                  <DatePicker
-                    selected={to}
-                    onChange={date =>
-                      this.setState({
-                        to: date,
-                      })
-                    }
-                    dateFormat="dd.MM.YYYY HH:mm"
-                    locale="ru"
-                    placeholderText="До"
-                    showTimeSelect
-                    timeFormat="HH:mm"
-                    timeIntervals={15}
-                    timeCaption="Время"
-                    isClearable
-                  />
+                  <ChooseDateItemWrapper>
+                    <DatePickerWrapper>
+                      <DatePicker
+                        selected={to}
+                        onChange={date => this.setState({ to: date })}
+                        dateFormat="dd.MM.YYYY HH:mm"
+                        locale="ru"
+                        placeholderText="До"
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        timeCaption="Время"
+                        isClearable
+                      />
+                    </DatePickerWrapper>
+                  </ChooseDateItemWrapper>
 
-                  <Button
-                    onClick={() =>
-                      getData(
-                        selectedUser.get('id'),
-                        from && Math.round(from),
-                        to && Math.round(to),
-                      )
-                    }
-                    size="small"
-                  >
-                    Обновить
-                  </Button>
-                </Block>
+                  <ChooseDateItemWrapper>
+                    <Button
+                      onClick={() =>
+                        getData(
+                          selectedUser.get('id'),
+                          from && Math.round(from),
+                          to && Math.round(to),
+                        )
+                      }
+                      size="medium"
+                    >
+                      Обновить
+                    </Button>
+                  </ChooseDateItemWrapper>
+                </div>
               </div>
             )}
-          </Block>
+          </div>
 
           <SectionsDivider horizontal>Добавить пользователя</SectionsDivider>
 
