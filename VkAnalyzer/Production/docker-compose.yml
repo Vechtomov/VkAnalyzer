@@ -1,0 +1,29 @@
+version: "3"
+services:
+    web:
+        # build: 
+        #     context: .
+        #     dockerfile: WebApplication/Dockerfile
+        image: vechtomov/vktracker
+        ports:
+            - "7777:5555"
+        depends_on:
+            - sqlserver
+        environment: 
+            - VK_APPID=${VK_APPID}
+            - VK_LOGIN=${VK_LOGIN}
+            - VK_PASSWORD=${VK_PASSWORD}
+            - SQL_SERVER_NAME=sqlserver
+            - SQL_SA_PASSWORD=${SQL_SA_PASSWORD}
+    sqlserver:
+        image: "microsoft/mssql-server-linux"
+        environment:
+            SA_PASSWORD: ${SQL_SA_PASSWORD}
+            ACCEPT_EULA: "Y"
+        volumes:
+            - sqlvolume:/var/opt/mssql
+        ports: 
+            - "1434:1433"
+
+volumes:
+    sqlvolume:

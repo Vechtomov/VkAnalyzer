@@ -25,7 +25,7 @@ namespace WebApplication.Controllers
             {
                 return new BaseSuccessResponse<UsersResponse>
                 {
-                    Data = new UsersResponse(),
+                    Data = new UsersResponse()
                 };
             }
 

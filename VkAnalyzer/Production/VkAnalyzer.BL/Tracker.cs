@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Threading;
-using VkAnalyzer.Interfaces;
+using System.Threading.Tasks;
 using VkAnalyzer.BE;
+using VkAnalyzer.Interfaces;
+using VkNet.Exception;
 
 namespace VkAnalyzer.BL
 {
@@ -54,7 +55,18 @@ namespace VkAnalyzer.BL
 
                 var currentUsers = users.Skip(from).Take(UsersCountPerTime);
 
-                var userInfos = (await _userInfoSource.GetOnlineInfo(currentUsers)).ToList();
+	            IEnumerable<UserOnlineInfo> userInfos;
+
+	            try
+	            {
+		            userInfos = (await _userInfoSource.GetOnlineInfo(currentUsers)).ToList();
+				}
+				catch (TooManyRequestsException)
+	            {
+					// too many requests per second - just skip, will try again
+		            continue;
+	            }
+
                 var updateList = new List<UserOnlineInfo>();
 
                 foreach (var info in userInfos)

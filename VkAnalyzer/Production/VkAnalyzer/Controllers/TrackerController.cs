@@ -47,7 +47,7 @@ namespace VkAnalyzer.Controllers
 					Id = user.Id,
 					AddedDateTime = DateTime.Now,
 					FirstName = user.FirstName,
-					LastName = user.LastName,
+					LastName = user.LastName
 				});
 			}
 

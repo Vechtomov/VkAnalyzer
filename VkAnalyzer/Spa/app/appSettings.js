@@ -2,7 +2,7 @@ class AppSettings {
   static get webApiUrl() {
     switch (process.env.NODE_ENV) {
       case 'development':
-        return 'https://localhost:5001';
+        return 'http://localhost:5555';
       default:
         return '';
     }

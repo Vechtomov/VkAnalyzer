@@ -4,13 +4,12 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NLog;
 using NSwag.AspNetCore;
 using VkAnalyzer.BE;
 using VkAnalyzer.BL;
-using VkAnalyzer.BL.SQL;
 using VkAnalyzer.Interfaces;
 using WebApplication.Extensions;
 using WebApplication.Settings;
@@ -19,12 +18,10 @@ namespace WebApplication
 {
     public class Startup
     {
-        private readonly IHostingEnvironment _environment;
-        public Startup(IConfiguration configuration, IHostingEnvironment environment)
-        {
-            Configuration = configuration;
-            _environment = environment;
-        }
+	    public Startup(IConfiguration configuration)
+	    {
+		    Configuration = configuration;
+	    }
 
         public IConfiguration Configuration { get; }
 
@@ -43,6 +40,8 @@ namespace WebApplication
 			services.Configure<UserInfoSourceMode>(Configuration.GetSection(nameof(UserInfoSourceMode)));
 			services.Configure<RepositoryMode>(Configuration.GetSection(nameof(RepositoryMode)));
 
+	        services.AddLogger();
+
 			services.AddUserInfoSource();
 			services.AddRepository();
 
@@ -59,8 +58,10 @@ namespace WebApplication
             IHostingEnvironment env,
             ITracker tracker,
             IUsersRepository usersRepository,
-	        DbContextOptions<UsersDbContext> options)
+	        IApplicationLifetime lifetime)
         {
+	        lifetime.ApplicationStopping.Register(LogManager.Shutdown);
+
             Task.Factory.StartNew(async () =>
             {
                 var userIds = (await usersRepository.GetUsersAsync()).Select(u => u.Id);
@@ -72,20 +73,22 @@ namespace WebApplication
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseCors(builder => builder
-                    .AllowAnyMethod()
-                    .AllowAnyHeader()
-                    .WithOrigins("http://localhost:3000")
-                    .AllowCredentials()
-                );
-            }
+
+				app.UseCors(builder => builder
+					.AllowAnyMethod()
+					.AllowAnyHeader()
+					.WithOrigins("http://localhost:3000")
+					.AllowCredentials()
+				);
+			}
             else
             {
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+
+			//app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 

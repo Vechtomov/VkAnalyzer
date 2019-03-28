@@ -23,7 +23,7 @@ namespace VkAnalyzer.BL
 		/// <returns></returns>
 		public Task<IEnumerable<UserOnlineInfo>> GetOnlineInfo(IEnumerable<long> ids)
         {
-            return Task.FromResult(ids.Select(id => new UserOnlineInfo()
+            return Task.FromResult(ids.Select(id => new UserOnlineInfo
             {
                 DateTime = DateTime.Now,
                 Id = id,
@@ -38,9 +38,9 @@ namespace VkAnalyzer.BL
 		/// <returns></returns>
         public Task<IEnumerable<UserInfo>> GetUsersInfo(IEnumerable<long> ids)
         {
-            return Task.FromResult(ids.Select(id => new UserInfo()
+            return Task.FromResult(ids.Select(id => new UserInfo
             {
-                Id = id,
+                Id = id
             }));
         }
 

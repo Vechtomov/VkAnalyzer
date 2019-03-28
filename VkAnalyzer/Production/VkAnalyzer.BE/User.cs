@@ -21,7 +21,7 @@ namespace VkAnalyzer.BE
 				FirstName = splitted.Length > 1 ? splitted[1] : null,
 				LastName = splitted.Length > 2 ? splitted[2] : null,
 				AddedDateTime = splitted.Length > 3 ? (DateTime?)DateTime.Parse(splitted[3]) : null,
-				AddedUser = splitted.Length > 4 ? (Guid?)Guid.Parse(splitted[4]) : null,
+				AddedUser = splitted.Length > 4 ? (Guid?)Guid.Parse(splitted[4]) : null
 			};
 		}
 

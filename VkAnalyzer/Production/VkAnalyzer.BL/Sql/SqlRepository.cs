@@ -24,7 +24,7 @@ namespace VkAnalyzer.BL.Sql
         public void SaveData(IEnumerable<UserOnlineInfo> infos)
         {
 			var dbContext = new UsersDbContext(_options);
-            dbContext.UserOnlineInfos.AddRange(infos.Select(info => new UserOnlineInfoModel()
+            dbContext.UserOnlineInfos.AddRange(infos.Select(info => new UserOnlineInfoModel
             {
                 OnlineInfo = info.OnlineInfo,
                 DateTime = info.DateTime,
@@ -36,8 +36,8 @@ namespace VkAnalyzer.BL.Sql
         public async Task SaveDataAsync(IEnumerable<UserOnlineInfo> infos)
 		{
 			var dbContext = new UsersDbContext(_options);
-			await dbContext.UserOnlineInfos.AddRangeAsync(infos.Select(info => new UserOnlineInfoModel()
-            {
+			await dbContext.UserOnlineInfos.AddRangeAsync(infos.Select(info => new UserOnlineInfoModel
+			{
                 OnlineInfo = info.OnlineInfo,
                 DateTime = info.DateTime,
                 UserId = info.Id
@@ -56,7 +56,7 @@ namespace VkAnalyzer.BL.Sql
                     .Select(info => new DateOnline
                     {
                         OnlineInfo = info.OnlineInfo,
-                        Date = info.DateTime,
+                        Date = info.DateTime
                     })
             };
         }
@@ -72,7 +72,7 @@ namespace VkAnalyzer.BL.Sql
                     .Select(info => new DateOnline
                     {
                         OnlineInfo = info.OnlineInfo,
-                        Date = info.DateTime,
+                        Date = info.DateTime
                     })
             });
         }

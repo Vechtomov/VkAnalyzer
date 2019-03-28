@@ -9,7 +9,7 @@ namespace VkAnalyzer.Interfaces
         IEnumerable<User> GetUsers();
         Task<IEnumerable<User>> GetUsersAsync();
 
-        void AddUser(User id);
+        void AddUser(User user);
         Task AddUserAsync(User id);
 
         // todo: implement this method

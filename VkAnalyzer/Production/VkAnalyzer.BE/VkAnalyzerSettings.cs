@@ -4,6 +4,6 @@
     {
         public string VkUserLogin { get; set; }
         public string VkUserPassword { get; set; }
-        public uint AppId { get; set; }
+        public string AppId { get; set; }
     }
 }

@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkAnalyzer.BL", "Production
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkAnalyzer.Interfaces", "Production\VkAnalyzer.Interfaces\VkAnalyzer.Interfaces.csproj", "{6D93514A-0265-4EE7-9C9B-4EE0E5B65BBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication", "Production\WebApplication\WebApplication.csproj", "{45350DBE-FF45-42E4-AE79-5590491BCC2C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication", "Production\WebApplication\WebApplication.csproj", "{45350DBE-FF45-42E4-AE79-5590491BCC2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoTest", "MongoTest\MongoTest.csproj", "{3E638053-1FF4-4D74-8367-1669EEDBABD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{45350DBE-FF45-42E4-AE79-5590491BCC2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45350DBE-FF45-42E4-AE79-5590491BCC2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45350DBE-FF45-42E4-AE79-5590491BCC2C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E638053-1FF4-4D74-8367-1669EEDBABD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E638053-1FF4-4D74-8367-1669EEDBABD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E638053-1FF4-4D74-8367-1669EEDBABD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E638053-1FF4-4D74-8367-1669EEDBABD9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

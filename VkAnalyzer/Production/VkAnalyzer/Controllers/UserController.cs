@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using VkAnalyzer.Models;
 using VkAnalyzer.Interfaces;
+using VkAnalyzer.Models;
 
 namespace VkAnalyzer.Controllers
 {
@@ -25,7 +25,7 @@ namespace VkAnalyzer.Controllers
             {
                 return new BaseSuccessResponse<UsersResponse>
                 {
-                    Data = new UsersResponse(),
+                    Data = new UsersResponse()
                 };
             }
 

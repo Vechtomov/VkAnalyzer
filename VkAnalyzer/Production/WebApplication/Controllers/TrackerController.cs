@@ -59,7 +59,7 @@ namespace WebApplication.Controllers
 					Id = user.Id,
 					AddedDateTime = DateTime.Now,
 					FirstName = user.FirstName,
-					LastName = user.LastName,
+					LastName = user.LastName
 				});
 			}
 
@@ -75,8 +75,13 @@ namespace WebApplication.Controllers
 		[HttpGet("users")]
 		public async Task<BaseResponse<IEnumerable<UserInfo>>> GetUsers()
 		{
-			var userIds = await _usersRepository.GetUsersAsync();
-			var userInfos = await _userSource.GetUsersInfo(userIds.Select(u => u.Id));
+			var userIds = (await _usersRepository.GetUsersAsync()).ToList();
+			IEnumerable<UserInfo> userInfos = new List<UserInfo>();
+
+			if (userIds.Any())
+			{
+				userInfos = await _userSource.GetUsersInfo(userIds.Select(u => u.Id));
+			}
 
 			return new BaseSuccessResponse<IEnumerable<UserInfo>>
 			{
