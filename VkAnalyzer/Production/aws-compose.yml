@@ -1,26 +1,29 @@
-web:
-    # build: 
-    #     context: .
-    #     dockerfile: WebApplication/Dockerfile
-    image: vechtomov/vktracker
-    ports:
-        - "7777:5555"
-    links:
-        - sqlserver
-    environment: 
-        - VK_APPID=${VK_APPID}
-        - VK_LOGIN=${VK_LOGIN}
-        - VK_PASSWORD=${VK_PASSWORD}
-        - SQL_SERVER_NAME=sqlserver
-        - SQL_SA_PASSWORD=${SQL_SA_PASSWORD}
-    cpu_shares: 100
-    mem_limit: 262144000
-sqlserver:
-    image: "microsoft/mssql-server-linux"
-    environment:
-        SA_PASSWORD: ${SQL_SA_PASSWORD}
-        ACCEPT_EULA: "Y"
-    ports: 
-        - "1434:1433"
-    cpu_shares: 100
-    mem_limit: 262144000
+version: "3.1"
+services:
+    web:
+        image: vechtomov/vktracker
+        ports:
+            - "7777:5555"
+        cpu_shares: 100
+        mem_limit: 262144000
+        links:
+            - mongodb
+        environment:
+            VkAnalyzerSettings__AppId: ${VK_APPID}
+            VkAnalyzerSettings__VkUserLogin: ${VK_LOGIN}
+            VkAnalyzerSettings__VkUserPassword: ${VK_PASSWORD}
+            MongoConnectionSettings__Host: mongodb
+            MongoConnectionSettings__Port: 27017
+            MongoConnectionSettings__Database: VkTracker
+            SqlRepositorySettings__Connection: Server=sqlserver;Initial Catalog=VkTrackerDb;User ID=sa;Password=${SQL_SA_PASSWORD}
+    mongodb:
+        image: mongo
+        ports:
+            - 27000:27017
+        cpu_shares: 100
+        mem_limit: 262144000
+        volumes:
+            - mongodbvolume:/data/db
+
+volumes:
+    mongodbvolume:

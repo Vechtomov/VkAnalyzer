@@ -24,22 +24,9 @@ namespace WebApplication.Extensions
 		{
 			collection.AddSingleton<IUserInfoSource, VkUserInfoSource>(x =>
 			{
-				var vkAnalyzerDefaultSettings = x.GetService<IOptions<VkAnalyzerSettings>>().Value;
+				var vkAnalyzerSettings = x.GetService<IOptions<VkAnalyzerSettings>>().Value;
 
-				var appId = Environment.GetEnvironmentVariable("VK_APPID");
-				var login = Environment.GetEnvironmentVariable("VK_LOGIN");
-				var password = Environment.GetEnvironmentVariable("VK_PASSWORD");
-
-				var vkSettings = string.IsNullOrEmpty(appId)
-					? vkAnalyzerDefaultSettings
-					: new VkAnalyzerSettings
-					{
-						AppId = appId,
-						VkUserLogin = login,
-						VkUserPassword = password
-					};
-
-				return new VkUserInfoSource(vkSettings);
+				return new VkUserInfoSource(vkAnalyzerSettings);
 			});
 		}
 
@@ -86,14 +73,7 @@ namespace WebApplication.Extensions
 
 			var repositorySettings = serviceProvider.GetService<IOptions<SqlRepositorySettings>>().Value;
 
-			var server = Environment.GetEnvironmentVariable("SQL_SERVER_NAME");
-			var password = Environment.GetEnvironmentVariable("SQL_SA_PASSWORD");
-
-			var connection = string.IsNullOrEmpty(password)
-				? repositorySettings.DevelopmentConnection
-				: string.Format(repositorySettings.Connection, server, password);
-
-			collection.AddDbContext<UsersDbContext>(o => o.UseSqlServer(connection));
+			collection.AddDbContext<UsersDbContext>(o => o.UseSqlServer(repositorySettings.Connection));
 
 			var options = serviceProvider.GetRequiredService<DbContextOptions<UsersDbContext>>();
 
@@ -106,7 +86,7 @@ namespace WebApplication.Extensions
 		public static void AddMongoRepository(this IServiceCollection collection)
 		{
 			// register convention
-			var conventionPack = new ConventionPack {new CamelCaseElementNameConvention()};
+			var conventionPack = new ConventionPack { new CamelCaseElementNameConvention() };
 			ConventionRegistry.Register("camelCase", conventionPack, t => true);
 
 			// get settings

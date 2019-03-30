@@ -11,16 +11,18 @@ namespace VkAnalyzer.BL
 
 	public class MongoRepository : IUserInfoRepository, IUsersRepository
 	{
+		private const int DefaultMongoPort = 27017;
 		private readonly IMongoCollection<MongoUser> _collection;
 
 		public MongoRepository(MongoConnectionSettings connectionSettings)
 		{
+			var parsed = int.TryParse(connectionSettings.Port, out var port);
 			var client = new MongoClient(new MongoClientSettings
 			{
-				Server = new MongoServerAddress(connectionSettings.Host, connectionSettings.Port)
+				Server = new MongoServerAddress(connectionSettings.Host, parsed ? port : DefaultMongoPort)
 			});
 
-			_collection = client.GetDatabase(connectionSettings.DbName).GetCollection<MongoUser>("users");
+			_collection = client.GetDatabase(connectionSettings.Database).GetCollection<MongoUser>("users");
 		}
 
 		public UserOnlineData ReadData(long id, DateTime from, DateTime to)
@@ -36,7 +38,7 @@ namespace VkAnalyzer.BL
 
 			var lastBeforeFrom = data.Info.ToList().FindLast(i => i.DateTime < from);
 
-			if(lastBeforeFrom != null)
+			if (lastBeforeFrom != null)
 				infos.Insert(0, lastBeforeFrom);
 
 			return new UserOnlineData
@@ -44,7 +46,8 @@ namespace VkAnalyzer.BL
 				Id = id,
 				OnlineInfos = infos.Select(i => new DateOnline
 				{
-					OnlineInfo = i.OnlineInfo, Date = i.DateTime
+					OnlineInfo = i.OnlineInfo,
+					Date = i.DateTime
 				})
 			};
 		}

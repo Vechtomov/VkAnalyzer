@@ -3,7 +3,7 @@
     public class MongoConnectionSettings
     {
         public string Host { get; set; }
-        public int Port { get; set; }
-	    public string DbName { get; set; }
+        public string Port { get; set; }
+	    public string Database { get; set; }
     }
 }
