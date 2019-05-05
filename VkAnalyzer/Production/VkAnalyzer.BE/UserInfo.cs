@@ -7,5 +7,6 @@
         public string LastName { get; set; }
         public string ScreenName { get; set; }
         public string Photo { get; set; }
+	    public int? FriendsCount { get; set; }
     }
 }
