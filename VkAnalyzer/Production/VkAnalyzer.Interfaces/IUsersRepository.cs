@@ -6,13 +6,16 @@ namespace VkAnalyzer.Interfaces
 {
     public interface IUsersRepository
     {
-        IEnumerable<User> GetUsers();
+	    int GetUsersCount();
+	    Task<int> GetUsersCountAsync();
+
+		IEnumerable<User> GetUsers();
         Task<IEnumerable<User>> GetUsersAsync();
 
         void AddUser(User user);
         Task AddUserAsync(User id);
 
-        // todo: implement this method
-        //bool IsUserTracked(long id);
+	    // todo: implement this method
+	    //bool IsUserTracked(long id);
     }
 }

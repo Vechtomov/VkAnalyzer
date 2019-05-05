@@ -233,3 +233,5 @@ VkAnalyzer/Spa/package-lock.json
 VkAnalyzer/Production/.env
 VkAnalyzer/Spa/package-lock.json
 VkAnalyzer/Spa/package-lock.json
+VkAnalyzer/Production/aws-compose.yml
+VkAnalyzer/Production/ecs-params.yml

@@ -19,3 +19,9 @@ export const ADD_USER_ERROR = 'app/HomePage/ADD_USER_ERROR';
 export const GET_DATA = 'app/HomePage/GET_DATA';
 export const GET_DATA_SUCCESS = 'app/HomePage/GET_DATA_SUCCESS';
 export const GET_DATA_ERROR = 'app/HomePage/GET_DATA_ERROR';
+
+export const GET_FRIENDS = 'app/HomePage/GET_FRIENDS';
+export const SET_FRIENDS = 'app/HomePage/SET_FRIENDS';
+export const GET_FRIENDS_ERROR = 'app/HomePage/GET_FRIENDS_ERROR';
+
+export const SET_USERS_COUNT = 'app/HomePage/SET_USERS_COUNT';

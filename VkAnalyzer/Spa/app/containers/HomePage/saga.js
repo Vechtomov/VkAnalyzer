@@ -1,6 +1,12 @@
 import { call, put, takeLatest, fork, take, cancel } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
-import { GET_USERS, FIND_USERS, ADD_USER, GET_DATA } from './constants';
+import {
+  GET_USERS,
+  FIND_USERS,
+  ADD_USER,
+  GET_DATA,
+  GET_FRIENDS,
+} from './constants';
 import {
   setUsers,
   getUsersError,
@@ -10,8 +16,12 @@ import {
   addUserError,
   setData,
   getDataError,
+  setFriends,
+  getFriendsError,
+  setUsersCount,
 } from './actions';
 import UsersService from '../../services/users';
+import { setError } from '../App/actions';
 
 export default function* defaultSaga() {
   yield fork(commonRequests);
@@ -22,6 +32,7 @@ function* commonRequests() {
   yield takeLatest(GET_USERS, getUsersFlow);
   yield takeLatest(ADD_USER, addUserFlow);
   yield takeLatest(GET_DATA, getOnlineDataFlow);
+  yield takeLatest(GET_FRIENDS, getFriendsFlow);
 }
 
 function* watchInput() {
@@ -51,6 +62,9 @@ function* findUsersFlow(text) {
 
 function* getUsersFlow() {
   try {
+    const { success, data } = yield call(UsersService.getUsersCount);
+    if (success) yield put(setUsersCount(data));
+
     const response = yield call(UsersService.getUsers);
     if (response.success) {
       yield put(setUsers(response.data));
@@ -86,5 +100,22 @@ function* getOnlineDataFlow({ id, from, to }) {
     }
   } catch (error) {
     yield put(getDataError(error.message));
+  }
+}
+
+function* getFriendsFlow({ userId }) {
+  try {
+    const response = yield call(UsersService.getFriends, userId);
+    const { success, data } = response;
+    if (success) {
+      yield put(setError(`Друзей: ${data.length}`));
+      yield put(setFriends(data));
+      yield call(UsersService.addUsers, data.map(i => i.id));
+      if (data.length === 0) yield put(setError('Друзей не найдено'));
+    } else {
+      yield put(getFriendsError(response.errorMessage));
+    }
+  } catch (error) {
+    yield put(setError(error.message));
   }
 }

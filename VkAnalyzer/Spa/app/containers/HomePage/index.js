@@ -26,8 +26,9 @@ import {
   makeSelectUsers,
   makeSelectFoundedUsers,
   makeSelectUserOnlineData,
+  makeSelectUsersCount,
 } from './selectors';
-import { getUsers, findUsers, addUser, getData } from './actions';
+import { getUsers, findUsers, addUser, getData, getFriends } from './actions';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -78,10 +79,12 @@ class HomePage extends React.Component {
     const {
       homePage: { loading, error },
       users,
+      usersCount,
       foundedUsers,
       addUser,
       userOnlineData,
       getData,
+      getFriends,
     } = this.props;
     const { selectedUser, from, to } = this.state;
 
@@ -107,6 +110,12 @@ class HomePage extends React.Component {
           <MainTitle as="h1">VK ONLINE TRACKER</MainTitle>
 
           <SectionsDivider horizontal>Статистика</SectionsDivider>
+          <div>
+            Самая трудная вещь на свете — это думать своей собственной головой.
+            Вот, наверное, почему так мало людей этим занимаются. ©Генри Форд
+          </div>
+          <br />
+          <div>Количество пользователей: {usersCount}</div>
 
           <Grid>
             <Grid.Column computer={8} mobile={16}>
@@ -122,7 +131,20 @@ class HomePage extends React.Component {
               />
             </Grid.Column>
             <Grid.Column computer={8} mobile={16}>
-              {selectedUser && <UserInfo user={selectedUser} />}
+              {selectedUser && (
+                <Grid>
+                  <Grid.Column width={8}>
+                    <UserInfo user={selectedUser} />
+                  </Grid.Column>
+                  <Grid.Column width={8}>
+                    <Block>Друзей: {selectedUser.get('friendsCount')}</Block>
+                    <Button
+                      onClick={() => getFriends(selectedUser.get('id'))}
+                      content="Добавить друзей"
+                    />
+                  </Grid.Column>
+                </Grid>
+              )}
             </Grid.Column>
           </Grid>
           <div>
@@ -231,6 +253,7 @@ HomePage.propTypes = {
   // selectors
   homePage: PropTypes.object,
   users: PropTypes.object,
+  usersCount: PropTypes.number,
   foundedUsers: PropTypes.object,
   userOnlineData: PropTypes.object,
 
@@ -239,11 +262,13 @@ HomePage.propTypes = {
   findUsers: PropTypes.func,
   addUser: PropTypes.func,
   getData: PropTypes.func,
+  getFriends: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
   homePage: makeSelectHomePage(),
   users: makeSelectUsers(),
+  usersCount: makeSelectUsersCount(),
   foundedUsers: makeSelectFoundedUsers(),
   userOnlineData: makeSelectUserOnlineData(),
 });
@@ -255,6 +280,7 @@ function mapDispatchToProps(dispatch) {
       findUsers,
       addUser,
       getData,
+      getFriends,
     },
     dispatch,
   );

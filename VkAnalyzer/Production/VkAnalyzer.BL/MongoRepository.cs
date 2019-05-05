@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using VkAnalyzer.BE;
 using VkAnalyzer.Interfaces;
@@ -12,7 +13,8 @@ namespace VkAnalyzer.BL
 	public class MongoRepository : IUserInfoRepository, IUsersRepository
 	{
 		private const int DefaultMongoPort = 27017;
-		private readonly IMongoCollection<MongoUser> _collection;
+		private readonly IMongoDatabase _db;
+		private IMongoCollection<MongoUser> Users => _db.GetCollection<MongoUser>("users");
 
 		public MongoRepository(MongoConnectionSettings connectionSettings)
 		{
@@ -22,8 +24,21 @@ namespace VkAnalyzer.BL
 				Server = new MongoServerAddress(connectionSettings.Host, parsed ? port : DefaultMongoPort)
 			});
 
-			_collection = client.GetDatabase(connectionSettings.Database).GetCollection<MongoUser>("users");
+			_db = client.GetDatabase(connectionSettings.Database);
+			if (!CollectionExists(_db, "users"))
+			{
+				_db.CreateCollection("users");
+			}
 		}
+
+		public bool CollectionExists(IMongoDatabase database, string collectionName)
+		{
+			var filter = new BsonDocument("name", collectionName);
+			var options = new ListCollectionNamesOptions { Filter = filter };
+
+			return database.ListCollectionNames(options).Any();
+		}
+
 
 		public UserOnlineData ReadData(long id, DateTime from, DateTime to)
 		{
@@ -32,7 +47,7 @@ namespace VkAnalyzer.BL
 
 		private UserOnlineData ReadDataV2(long id, DateTime from, DateTime to)
 		{
-			var data = _collection.Find(u => u.Id == id).Single();
+			var data = Users.Find(u => u.Id == id).Single();
 
 			var infos = data.Info.Where(i => i.DateTime >= from && i.DateTime <= to).ToList();
 
@@ -54,7 +69,7 @@ namespace VkAnalyzer.BL
 
 		private UserOnlineData ReadDataV1(long id, DateTime from, DateTime to)
 		{
-			var userData = _collection
+			var userData = Users
 				.Aggregate()
 				.Match(u => u.Id == id)
 				.Project(Builders<MongoUser>.Projection
@@ -91,7 +106,7 @@ namespace VkAnalyzer.BL
 					OnlineInfo = userOnlineInfo.OnlineInfo
 				});
 
-				_collection.UpdateOne(u => u.Id == userOnlineInfo.Id, update);
+				Users.UpdateOne(u => u.Id == userOnlineInfo.Id, update);
 			}
 		}
 
@@ -101,28 +116,38 @@ namespace VkAnalyzer.BL
 			{
 				var update = Builders<MongoUser>.Update.Push(u => u.Info, Map(userOnlineInfo));
 
-				await _collection.UpdateOneAsync(u => u.Id == userOnlineInfo.Id, update);
+				await Users.UpdateOneAsync(u => u.Id == userOnlineInfo.Id, update);
 			}
+		}
+
+		public int GetUsersCount()
+		{
+			return (int)Users.CountDocuments(Builders<MongoUser>.Filter.Empty);
+		}
+
+		public async Task<int> GetUsersCountAsync()
+		{
+			return (int)await Users.CountDocumentsAsync(Builders<MongoUser>.Filter.Empty);
 		}
 
 		public IEnumerable<User> GetUsers()
 		{
-			return _collection.Find(u => true).ToList().Select(Map);
+			return Users.Find(u => true).ToList().Select(Map);
 		}
 
 		public async Task<IEnumerable<User>> GetUsersAsync()
 		{
-			return (await _collection.Find(u => true).ToListAsync()).Select(Map);
+			return (await Users.Find(u => true).ToListAsync()).Select(Map);
 		}
 
 		public void AddUser(User user)
 		{
-			_collection.InsertOne(Map(user));
+			Users.InsertOne(Map(user));
 		}
 
 		public async Task AddUserAsync(User user)
 		{
-			await _collection.InsertOneAsync(Map(user));
+			await Users.InsertOneAsync(Map(user));
 		}
 
 		private static User Map(MongoUser user)

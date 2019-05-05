@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using VkAnalyzer.BE;
 using VkAnalyzer.Interfaces;
 using WebApplication.Models;
 
@@ -38,5 +40,17 @@ namespace WebApplication.Controllers
                 }
             };
         }
-    }
+
+	    /// <summary />
+	    /// <returns></returns>
+	    [HttpGet("friends")]
+	    public async Task<BaseResponse<IEnumerable<UserInfo>>> GetFriends([FromQuery] GetFriendsRequest request)
+	    {
+		    return new BaseSuccessResponse<IEnumerable<UserInfo>>
+		    {
+			    Data = await _userSource.GetUserFriends(request.UserId)
+		    };
+	    }
+
+	}
 }

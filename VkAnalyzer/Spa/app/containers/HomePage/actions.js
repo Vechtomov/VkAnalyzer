@@ -17,6 +17,10 @@ import {
   GET_DATA,
   GET_DATA_SUCCESS,
   GET_DATA_ERROR,
+  GET_FRIENDS,
+  SET_FRIENDS,
+  GET_FRIENDS_ERROR,
+  SET_USERS_COUNT,
 } from './constants';
 
 export const getUsers = () => ({ type: GET_USERS });
@@ -34,3 +38,9 @@ export const addUserError = error => ({ type: ADD_USER_ERROR, error });
 export const getData = (id, from, to) => ({ type: GET_DATA, id, from, to });
 export const setData = data => ({ type: GET_DATA_SUCCESS, data });
 export const getDataError = error => ({ type: GET_DATA_ERROR, error });
+
+export const getFriends = userId => ({ type: GET_FRIENDS, userId });
+export const setFriends = data => ({ type: SET_FRIENDS, data });
+export const getFriendsError = error => ({ type: GET_FRIENDS_ERROR, error });
+
+export const setUsersCount = count => ({ type: SET_USERS_COUNT, count });

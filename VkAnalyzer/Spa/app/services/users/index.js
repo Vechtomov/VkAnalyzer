@@ -10,6 +10,14 @@ export default class UsersService {
     return request(URL.GET_USERS, options);
   };
 
+  static getUsersCount = () => {
+    const options = {
+      method: 'GET',
+    };
+
+    return request(URL.GET_USERS_COUNT, options);
+  };
+
   static findUsers = filter => {
     const options = {
       method: 'GET',
@@ -43,5 +51,16 @@ export default class UsersService {
     };
 
     return request(URL.GET_DATA, options);
+  };
+
+  static getFriends = userId => {
+    const options = {
+      method: 'GET',
+      params: {
+        userId,
+      },
+    };
+
+    return request(URL.GET_FRIENDS, options);
   };
 }

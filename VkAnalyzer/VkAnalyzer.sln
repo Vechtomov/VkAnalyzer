@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2048
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkAnalyzer", "Production\VkAnalyzer\VkAnalyzer.csproj", "{A51DEF9B-E7C9-4DB5-82ED-0378638DA6A5}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkAnalyzer.BE", "Production\VkAnalyzer.BE\VkAnalyzer.BE.csproj", "{FBD5B748-3808-46D1-98DD-CDB363481F8D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkAnalyzer.BL", "Production\VkAnalyzer.BL\VkAnalyzer.BL.csproj", "{42DBF072-C2B6-465F-954B-E62C5171F632}"
@@ -13,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VkAnalyzer.Interfaces", "Pr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication", "Production\WebApplication\WebApplication.csproj", "{45350DBE-FF45-42E4-AE79-5590491BCC2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoTest", "MongoTest\MongoTest.csproj", "{3E638053-1FF4-4D74-8367-1669EEDBABD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MongoTest", "MongoTest\MongoTest.csproj", "{3E638053-1FF4-4D74-8367-1669EEDBABD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A51DEF9B-E7C9-4DB5-82ED-0378638DA6A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A51DEF9B-E7C9-4DB5-82ED-0378638DA6A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A51DEF9B-E7C9-4DB5-82ED-0378638DA6A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A51DEF9B-E7C9-4DB5-82ED-0378638DA6A5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FBD5B748-3808-46D1-98DD-CDB363481F8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FBD5B748-3808-46D1-98DD-CDB363481F8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBD5B748-3808-46D1-98DD-CDB363481F8D}.Release|Any CPU.ActiveCfg = Release|Any CPU

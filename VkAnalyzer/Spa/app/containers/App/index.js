@@ -1,50 +1,93 @@
-/**
- *
- * App
- *
- * This component is the skeleton around the actual pages, and should only
- * contain code that should be seen on all pages. (e.g. navigation bar)
- */
-
 import React from 'react';
 import { Helmet } from 'react-helmet';
-import styled from 'styled-components';
 import { Switch, Route } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
+import { compose, bindActionCreators } from 'redux';
+import { Icon, Transition } from 'semantic-ui-react';
+
+import reducer from './reducer';
+import injectReducer from '../../utils/injectReducer';
 
 import HomePage from '../HomePage/Loadable';
 import Test from '../Test/Loadable';
 
 import GlobalStyle from '../../global-styles';
+import {
+  AppWrapper,
+  MainWrapper,
+  ErrorWrapper,
+  CloseIconWrapper,
+} from './Wrappers';
+import { makeSelectError } from './selectors';
+import { setError, clearError } from './actions';
 
-const AppWrapper = styled.div`
-  display: flex;
-  min-height: 100vh;
-  position: relative;
-  flex-direction: column;
-`;
+class App extends React.Component {
+  render() {
+    const { error, clearError } = this.props;
+    return (
+      <>
+        <AppWrapper>
+          <Helmet
+            titleTemplate="Vk Online Tracker"
+            defaultTitle="Vk Online Tracker"
+          >
+            <meta name="description" content="Vk Online Tracker" />
+          </Helmet>
+          <MainWrapper>
+            <Switch>
+              <Route exact path="/" component={HomePage} />
+              <Route exact path="/test" component={Test} />
+            </Switch>
+          </MainWrapper>
+          <GlobalStyle />
+        </AppWrapper>
+        <Transition.Group animation="fade up" duration={300}>
+          {error && (
+            <ErrorWrapper>
+              {error}
+              <CloseIconWrapper onClick={clearError}>
+                <Icon name="close" />
+              </CloseIconWrapper>
+            </ErrorWrapper>
+          )}
+        </Transition.Group>
+      </>
+    );
+  }
+}
 
-const MainWrapper = styled.div`
-  flex: 1 0 auto;
-  padding: 0;
-  min-height: calc(100vh - 78px);
-`;
+App.propTypes = {
+  // selectors
+  error: PropTypes.string,
 
-export default function App() {
-  return (
-    <AppWrapper>
-      <Helmet
-        titleTemplate="Vk Online Tracker"
-        defaultTitle="Vk Online Tracker"
-      >
-        <meta name="description" content="Vk Online Tracker" />
-      </Helmet>
-      <MainWrapper>
-        <Switch>
-          <Route exact path="/" component={HomePage} />
-          <Route exact path="/test" component={Test} />
-        </Switch>
-      </MainWrapper>
-      <GlobalStyle />
-    </AppWrapper>
+  // actions
+  clearError: PropTypes.func,
+};
+
+const mapStateToProps = createStructuredSelector({
+  error: makeSelectError(),
+});
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      setError,
+      clearError,
+    },
+    dispatch,
   );
 }
+
+const withConnect = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+);
+
+const withReducer = injectReducer({ key: 'app', reducer });
+
+export default compose(
+  withReducer,
+  withConnect,
+)(App);

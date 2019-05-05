@@ -14,6 +14,7 @@ import {
   ADD_USER_SUCCESS,
   GET_DATA,
   GET_DATA_SUCCESS,
+  SET_USERS_COUNT,
 } from './constants';
 
 const mapOnlineData = infos => {
@@ -53,6 +54,9 @@ export const initialState = fromJS({
   loading: false,
   error: null,
   users: null,
+  stat: {
+    usersCount: 0,
+  },
   foundedUsers: null,
   userAdded: false,
   userOnlineData: {
@@ -73,6 +77,9 @@ function homePageReducer(state = initialState, action) {
         .set('users', fromJS(action.users));
     case GET_USERS_ERROR:
       return state.set('loading', false).set('error', action.error);
+
+    case SET_USERS_COUNT:
+      return state.setIn(['stat', 'usersCount'], action.count);
 
     case FIND_USERS_SUCCESS:
       return state.set('foundedUsers', fromJS(action.data.users));

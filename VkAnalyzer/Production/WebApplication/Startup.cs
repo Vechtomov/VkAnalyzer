@@ -12,7 +12,9 @@ using VkAnalyzer.BE;
 using VkAnalyzer.BL;
 using VkAnalyzer.Interfaces;
 using WebApplication.Extensions;
+using WebApplication.Middlewares;
 using WebApplication.Settings;
+using WebApplication.Validation;
 
 namespace WebApplication
 {
@@ -47,7 +49,10 @@ namespace WebApplication
 
 			services.AddSingleton<ITracker, Tracker>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc(options =>
+            {
+	            options.Filters.Add(typeof(ValidatorActionFilter));
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // Register the Swagger services
             services.AddSwaggerDocument();
@@ -72,8 +77,6 @@ namespace WebApplication
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-
 				app.UseCors(builder => builder
 					.AllowAnyMethod()
 					.AllowAnyHeader()
@@ -83,13 +86,13 @@ namespace WebApplication
 			}
             else
             {
-                app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
 
+	        app.UseMiddleware<ExceptionMiddleware>();
 
 			//app.UseHttpsRedirection();
-            app.UseStaticFiles();
+			app.UseStaticFiles();
             app.UseCookiePolicy();
 
             app.UseSwagger();

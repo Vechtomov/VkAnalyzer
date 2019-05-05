@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -60,11 +61,18 @@ namespace VkAnalyzer.BL
 	            try
 	            {
 		            userInfos = (await _userInfoSource.GetOnlineInfo(currentUsers)).ToList();
-				}
-				catch (TooManyRequestsException)
+	            }
+	            catch (TooManyRequestsException)
 	            {
-					// too many requests per second - just skip, will try again
+		            // too many requests per second - just skip, will try again
+		            Debug.WriteLine("Too many requests");
 		            continue;
+	            }
+	            catch (Exception)
+	            {
+					// ignored for a while
+		            index++;
+					continue;
 	            }
 
                 var updateList = new List<UserOnlineInfo>();

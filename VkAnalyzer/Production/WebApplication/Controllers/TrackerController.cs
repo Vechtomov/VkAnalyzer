@@ -9,6 +9,7 @@ using WebApplication.Models;
 
 namespace WebApplication.Controllers
 {
+	/// <inheritdoc />
 	/// <summary />
 	[Route("api/[controller]")]
 	[ApiController]
@@ -19,9 +20,7 @@ namespace WebApplication.Controllers
 		private readonly IUserInfoRepository _userRepository;
 		private readonly IUsersRepository _usersRepository;
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary />
 		/// <param name="tracker"></param>
 		/// <param name="userSource"></param>
 		/// <param name="userRepository"></param>
@@ -37,12 +36,11 @@ namespace WebApplication.Controllers
 			_usersRepository = usersRepository ?? throw new ArgumentNullException(nameof(usersRepository));
 		}
 
-
 		/// <summary />
 		/// <param name="request"></param>
 		/// <returns></returns>
 		[HttpPost("addUsers")]
-		public async Task<BaseResponse> AddUsers([FromBody]AddUsersRequest request)
+		public async Task<BaseResponse> AddUsers([FromBody] AddUsersRequest request)
 		{
 			var userIds = (await _usersRepository.GetUsersAsync()).ToList().Select(u => u.Id);
 			var newUserIds = request.Ids
@@ -68,9 +66,18 @@ namespace WebApplication.Controllers
 			return new BaseSuccessResponse();
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary />
+		/// <returns></returns>
+		[HttpGet("usersCount")]
+		public async Task<BaseResponse<int>> GetUsersCount()
+		{
+			return new BaseSuccessResponse<int>
+			{
+				Data = await _usersRepository.GetUsersCountAsync()
+			};
+		}
+
+		/// <summary />
 		/// <returns></returns>
 		[HttpGet("users")]
 		public async Task<BaseResponse<IEnumerable<UserInfo>>> GetUsers()
@@ -89,9 +96,7 @@ namespace WebApplication.Controllers
 			};
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
+		/// <summary />
 		/// <param name="id"></param>
 		/// <param name="from"></param>
 		/// <param name="to"></param>

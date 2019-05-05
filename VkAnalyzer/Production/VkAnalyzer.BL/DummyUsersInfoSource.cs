@@ -44,7 +44,12 @@ namespace VkAnalyzer.BL
             }));
         }
 
-        private static OnlineInfo GetRandomOnlineInfoById(long id)
+	    public Task<IEnumerable<UserInfo>> GetUserFriends(long userId)
+	    {
+		    return Task.FromResult(Enumerable.Empty<UserInfo>());
+	    }
+
+	    private static OnlineInfo GetRandomOnlineInfoById(long id)
         {
             return (OnlineInfo)((DateTime.Now.Hour + id) % 5);
         }

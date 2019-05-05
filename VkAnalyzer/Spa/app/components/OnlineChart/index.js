@@ -14,7 +14,26 @@ import {
 } from 'react-timeseries-charts';
 
 function outageEventStyleFunc(event, state) {
-  const color = event._d.getIn(['data', 'type']) === 2 ? 'blue' : 'green';
+  const status = event._d.getIn(['data', 'type']);
+  let color;
+  switch (status) {
+    case 0:
+      color = 'red';
+      break;
+    case 2:
+      color = 'blue';
+      break;
+    case 3:
+      color = 'green';
+      break;
+    case 4:
+      color = 'yellow';
+      break;
+    default:
+      color = 'black';
+      break;
+  }
+
   switch (state) {
     case 'normal':
       return {

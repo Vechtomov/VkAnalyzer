@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +29,13 @@ namespace VkAnalyzer.BL
 				ApplicationId = ulong.Parse(settings.AppId),
 				Login = settings.VkUserLogin,
 				Password = settings.VkUserPassword,
-				Settings = Settings.Status
+				Settings = Settings.Status,
+			};
+
+			_vkApi.OnTokenExpires += sender =>
+			{
+				sender.RefreshToken();
+				Debug.WriteLine("Refresh token");
 			};
 
 			_vkApi.Authorize(param);
@@ -45,7 +52,7 @@ namespace VkAnalyzer.BL
 			var users = await _vkApi.Users.GetAsync(ids.ToArray(), ProfileFields.Online | ProfileFields.OnlineMobile | ProfileFields.OnlineApp | ProfileFields.LastSeen);
 			var dateTime = DateTime.Now.ToUniversalTime();
 
-			return users.Select(u => new UserOnlineInfo
+			return users.Where(u => !u.IsDeactivated).Select(u => new UserOnlineInfo
 			{
 				Id = u.Id,
 				DateTime = GetOnlineInfoByUser(u) == OnlineInfo.Offline && u.LastSeen.Time.HasValue
@@ -82,35 +89,56 @@ namespace VkAnalyzer.BL
 				{
 					return (await GetUsersInfo(new[] { id }), 1);
 				}
-
 			}
+
 			var users = await _vkApi.Users.SearchAsync(new UserSearchParams
 			{
 				Query = filter,
 				Fields = ProfileFields.Photo100 | ProfileFields.ScreenName
 			});
 
-			return (users.Select(u => new UserInfo
-			{
-				Id = u.Id,
-				FirstName = u.FirstName,
-				LastName = u.LastName,
-				ScreenName = u.ScreenName,
-				Photo = u.Photo100.ToString()
-			}), (int)users.TotalCount);
+			return (users.Select(ConvertUserToUserInfo), (int)users.TotalCount);
 		}
 
 		public async Task<IEnumerable<UserInfo>> GetUsersInfo(IEnumerable<long> ids)
 		{
-			var user = await _vkApi.Users.GetAsync(ids, ProfileFields.Photo100 | ProfileFields.ScreenName);
-			return user.Select(u => new UserInfo
+			var result = new List<User>();
+			var userIds = ids.ToList();
+
+			const int maxUsersCountPerRequest = 1000;
+
+			for (var i = 0; i < userIds.Count / maxUsersCountPerRequest + 1; i++)
 			{
-				Id = u.Id,
-				FirstName = u.FirstName,
-				LastName = u.LastName,
-				ScreenName = u.ScreenName,
-				Photo = u.Photo100.ToString()
+				var users = await _vkApi.Users.GetAsync(userIds.Skip(i * maxUsersCountPerRequest).Take(maxUsersCountPerRequest),
+					ProfileFields.Photo100 | ProfileFields.ScreenName | ProfileFields.Counters,
+					skipAuthorization: true);
+				result.AddRange(users);
+			}
+			return result.Select(ConvertUserToUserInfo);
+		}
+
+		public async Task<IEnumerable<UserInfo>> GetUserFriends(long userId)
+		{
+			var friends = await _vkApi.Friends.GetAsync(new FriendsGetParams
+			{
+				UserId = userId,
+				Fields = ProfileFields.Photo100 | ProfileFields.ScreenName,
 			});
+
+			return friends.Select(ConvertUserToUserInfo);
+		}
+
+		private static UserInfo ConvertUserToUserInfo(User user)
+		{
+			return new UserInfo
+			{
+				Id = user.Id,
+				FirstName = user.FirstName,
+				LastName = user.LastName,
+				ScreenName = user.ScreenName,
+				Photo = user.Photo100.ToString(),
+				FriendsCount = user.Counters?.Friends
+			};
 		}
 	}
 }

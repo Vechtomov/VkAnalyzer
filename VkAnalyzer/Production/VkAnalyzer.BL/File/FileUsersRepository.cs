@@ -15,6 +15,16 @@ namespace VkAnalyzer.BL.File
 			_fileRepositorySettings = fileRepositorySettings ?? throw new ArgumentNullException(nameof(fileRepositorySettings));
 		}
 
+		public int GetUsersCount()
+		{
+			return System.IO.File.ReadAllLines(_fileRepositorySettings.FileUsersRepositoryPath).Length;
+		}
+
+		public Task<int> GetUsersCountAsync()
+		{
+			return Task.FromResult(GetUsersCount());
+		}
+
 		public IEnumerable<User> GetUsers()
 		{
 			return System.IO.File.ReadAllLines(_fileRepositorySettings.FileUsersRepositoryPath).Select(User.Parse);
