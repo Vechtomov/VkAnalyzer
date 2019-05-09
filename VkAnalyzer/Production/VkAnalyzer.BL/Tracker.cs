@@ -13,7 +13,7 @@ namespace VkAnalyzer.BL
     public class Tracker : ITracker
     {
         private const int UsersCountPerTime = 1000;
-        private const int TimerPeriod = 1000; // 1 second
+        private const int TimerPeriod = 60000; // 60 second
 
         private readonly IUserInfoSource _userInfoSource;
         private readonly IUserInfoRepository _userRepository;
@@ -60,8 +60,9 @@ namespace VkAnalyzer.BL
 
 	            try
 	            {
-		            userInfos = (await _userInfoSource.GetOnlineInfo(currentUsers)).ToList();
-	            }
+		            //userInfos = new List<UserOnlineInfo>();
+					userInfos = (await _userInfoSource.GetOnlineInfo(currentUsers)).ToList();
+				}
 	            catch (TooManyRequestsException)
 	            {
 		            // too many requests per second - just skip, will try again

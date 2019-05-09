@@ -1,7 +1,7 @@
 ﻿using System;
 using VkAnalyzer.BE;
 
-namespace VkAnalyzer.BL.Sql
+namespace VkAnalyzer.BL.Sql.Model
 {
     public class UserOnlineInfoModel
     {

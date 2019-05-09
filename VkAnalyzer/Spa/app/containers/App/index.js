@@ -11,7 +11,6 @@ import reducer from './reducer';
 import injectReducer from '../../utils/injectReducer';
 
 import HomePage from '../HomePage/Loadable';
-import Test from '../Test/Loadable';
 
 import GlobalStyle from '../../global-styles';
 import {
@@ -38,7 +37,6 @@ class App extends React.Component {
           <MainWrapper>
             <Switch>
               <Route exact path="/" component={HomePage} />
-              <Route exact path="/test" component={Test} />
             </Switch>
           </MainWrapper>
           <GlobalStyle />

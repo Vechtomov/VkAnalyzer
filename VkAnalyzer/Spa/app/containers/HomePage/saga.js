@@ -19,6 +19,8 @@ import {
   setFriends,
   getFriendsError,
   setUsersCount,
+  setUserInfo,
+  getUserInfoError,
 } from './actions';
 import UsersService from '../../services/users';
 import { setError } from '../App/actions';
@@ -92,6 +94,13 @@ function* addUserFlow({ id }) {
 
 function* getOnlineDataFlow({ id, from, to }) {
   try {
+    const userResponse = yield call(UsersService.getUserInfo, id);
+    if (userResponse.success) {
+      yield put(setUserInfo(userResponse.data));
+    } else {
+      yield put(getUserInfoError(userResponse.errorMessage));
+    }
+
     const response = yield call(UsersService.getData, id, from, to);
     if (response.success) {
       yield put(setData(response.data));

@@ -5,6 +5,7 @@ const URL = {
   ADD_USER: '/api/tracker/addUsers',
   GET_DATA: '/api/tracker/getdata',
   GET_FRIENDS: '/api/user/friends',
+  GET_USER_INFO: '/api/user/info',
 };
 
 export default URL;

@@ -25,3 +25,9 @@ export const SET_FRIENDS = 'app/HomePage/SET_FRIENDS';
 export const GET_FRIENDS_ERROR = 'app/HomePage/GET_FRIENDS_ERROR';
 
 export const SET_USERS_COUNT = 'app/HomePage/SET_USERS_COUNT';
+
+export const USERNAME_CHANGED = 'app/HomePage/USERNAME_CHANGED';
+
+export const GET_USER_INFO = 'app/HomePage/GET_USER_INFO';
+export const SET_USER_INFO = 'app/HomePage/SET_USER_INFO';
+export const GET_USER_INFO_ERROR = 'app/HomePage/GET_USER_INFO_ERROR';

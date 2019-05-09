@@ -114,6 +114,7 @@ namespace VkAnalyzer.BL
 					skipAuthorization: true);
 				result.AddRange(users);
 			}
+
 			return result.Select(ConvertUserToUserInfo);
 		}
 

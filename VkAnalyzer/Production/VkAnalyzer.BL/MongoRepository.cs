@@ -158,7 +158,10 @@ namespace VkAnalyzer.BL
 				FirstName = user.FirstName,
 				LastName = user.LastName,
 				AddedDateTime = user.AddedDateTime,
-				AddedUser = user.AddedUser
+				ScreenName = user.ScreenName,
+				AdditionalInfo = user.AdditionalInfo,
+				Photo = user.Photo,
+				LastOnline = user.LastOnline
 			};
 		}
 
@@ -170,7 +173,9 @@ namespace VkAnalyzer.BL
 				FirstName = user.FirstName,
 				LastName = user.LastName,
 				AddedDateTime = user.AddedDateTime,
-				AddedUser = user.AddedUser,
+				AdditionalInfo = user.AdditionalInfo,
+				Photo = user.Photo,
+				ScreenName = user.ScreenName,
 				Info = new List<MongoOnlineInfo>
 				{
 					new MongoOnlineInfo {DateTime = DateTime.Now, OnlineInfo = OnlineInfo.Undefined}

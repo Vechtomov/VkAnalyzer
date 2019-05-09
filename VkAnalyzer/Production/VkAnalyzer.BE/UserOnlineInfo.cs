@@ -5,17 +5,17 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace VkAnalyzer.BE
 {
-    public class UserOnlineInfo
-    {
-        [BsonRepresentation(BsonType.ObjectId)]
-        public long Id { get; set; }
+	public class UserOnlineInfo
+	{
+		[BsonRepresentation(BsonType.ObjectId)]
+		public long Id { get; set; }
 
-        [BsonRepresentation(BsonType.DateTime)]
-        public DateTime DateTime { get; set; }
+		[BsonRepresentation(BsonType.DateTime)]
+		public DateTime DateTime { get; set; }
 
-        [BsonRepresentation(BsonType.Binary)]
-        public OnlineInfo OnlineInfo { get; set; }
-    }
+		[BsonRepresentation(BsonType.Binary)]
+		public OnlineInfo OnlineInfo { get; set; }
+	}
 
 	[BsonIgnoreExtraElements]
 	public class MongoUser
@@ -27,6 +27,12 @@ namespace VkAnalyzer.BE
 		public string LastName { get; set; }
 
 		public DateTime? AddedDateTime { get; set; }
+
+		public string Photo { get; set; }
+		public string ScreenName { get; set; }
+		public DateTime? LastOnline { get; set; }
+		public Dictionary<string, string> AdditionalInfo { get; set; }
+
 		public Guid? AddedUser { get; set; }
 
 		public IEnumerable<MongoOnlineInfo> Info { get; set; }

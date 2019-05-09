@@ -15,6 +15,8 @@ import {
   GET_DATA,
   GET_DATA_SUCCESS,
   SET_USERS_COUNT,
+  USERNAME_CHANGED,
+  SET_USER_INFO,
 } from './constants';
 
 const mapOnlineData = infos => {
@@ -54,6 +56,8 @@ export const initialState = fromJS({
   loading: false,
   error: null,
   users: null,
+  userName: undefined,
+  user: null,
   stat: {
     usersCount: 0,
   },
@@ -104,6 +108,12 @@ function homePageReducer(state = initialState, action) {
             onlineInfos: mapOnlineData(action.data.onlineInfos),
           }),
         );
+
+    case USERNAME_CHANGED:
+      return state.set('userName', action.name);
+
+    case SET_USER_INFO:
+      return state.set('user', fromJS(action.info));
 
     default:
       return state;

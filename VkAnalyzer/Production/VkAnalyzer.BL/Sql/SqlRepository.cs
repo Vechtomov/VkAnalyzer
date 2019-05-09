@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using VkAnalyzer.BE;
-using VkAnalyzer.BL.SQL;
+using VkAnalyzer.BL.Sql.Model;
 using VkAnalyzer.Interfaces;
 
 namespace VkAnalyzer.BL.Sql

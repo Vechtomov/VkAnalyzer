@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using VkAnalyzer.BE;
-using VkAnalyzer.BL.Sql;
+using VkAnalyzer.BL.Sql.Model;
 
-namespace VkAnalyzer.BL.SQL
+namespace VkAnalyzer.BL.Sql
 {
 	public sealed class UsersDbContext : DbContext
 	{

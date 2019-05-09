@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VkAnalyzer.BE
@@ -9,8 +10,11 @@ namespace VkAnalyzer.BE
 		public long Id { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
+		public string Photo { get; set; }
+		public string ScreenName { get; set; }
+		public DateTime? LastOnline { get; set; }
+		public Dictionary<string,string> AdditionalInfo { get; set; }
 		public DateTime? AddedDateTime { get; set; }
-		public Guid? AddedUser { get; set; }
 
 		public static User Parse(string str)
 		{
@@ -21,13 +25,12 @@ namespace VkAnalyzer.BE
 				FirstName = splitted.Length > 1 ? splitted[1] : null,
 				LastName = splitted.Length > 2 ? splitted[2] : null,
 				AddedDateTime = splitted.Length > 3 ? (DateTime?)DateTime.Parse(splitted[3]) : null,
-				AddedUser = splitted.Length > 4 ? (Guid?)Guid.Parse(splitted[4]) : null
 			};
 		}
 
 		public override string ToString()
 		{
-			return $"{Id};{FirstName};{LastName};{AddedDateTime};{AddedUser};";
+			return $"{Id};{FirstName};{LastName};{AddedDateTime};";
 		}
 	}
 }

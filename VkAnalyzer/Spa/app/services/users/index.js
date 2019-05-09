@@ -63,4 +63,15 @@ export default class UsersService {
 
     return request(URL.GET_FRIENDS, options);
   };
+
+  static getUserInfo = id => {
+    const options = {
+      method: 'GET',
+      params: {
+        id,
+      },
+    };
+
+    return request(URL.GET_USER_INFO, options);
+  };
 }

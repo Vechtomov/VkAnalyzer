@@ -21,6 +21,10 @@ import {
   SET_FRIENDS,
   GET_FRIENDS_ERROR,
   SET_USERS_COUNT,
+  USERNAME_CHANGED,
+  GET_USER_INFO_ERROR,
+  SET_USER_INFO,
+  GET_USER_INFO,
 } from './constants';
 
 export const getUsers = () => ({ type: GET_USERS });
@@ -44,3 +48,9 @@ export const setFriends = data => ({ type: SET_FRIENDS, data });
 export const getFriendsError = error => ({ type: GET_FRIENDS_ERROR, error });
 
 export const setUsersCount = count => ({ type: SET_USERS_COUNT, count });
+
+export const usernameChanged = name => ({ type: USERNAME_CHANGED, name });
+
+export const getUserInfo = id => ({ type: GET_USER_INFO, id });
+export const setUserInfo = info => ({ type: SET_USER_INFO, info });
+export const getUserInfoError = error => ({ type: GET_USER_INFO_ERROR, error });

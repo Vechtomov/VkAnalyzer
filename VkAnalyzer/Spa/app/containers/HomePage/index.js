@@ -18,7 +18,14 @@ import 'react-datepicker/dist/react-datepicker.css';
 import ru from 'date-fns/locale/ru';
 registerLocale('ru', ru);
 
-import { Button, Grid, Dropdown, Input, Loader } from 'semantic-ui-react';
+import {
+  Button,
+  Grid,
+  Dropdown,
+  Input,
+  Loader,
+  Popup,
+} from 'semantic-ui-react';
 import injectReducer from '../../utils/injectReducer';
 import injectSaga from '../../utils/injectSaga';
 import {
@@ -27,8 +34,18 @@ import {
   makeSelectFoundedUsers,
   makeSelectUserOnlineData,
   makeSelectUsersCount,
+  makeSelectUserName,
+  makeSelectAllUsers,
+  makeSelectUser,
 } from './selectors';
-import { getUsers, findUsers, addUser, getData, getFriends } from './actions';
+import {
+  getUsers,
+  findUsers,
+  addUser,
+  getData,
+  getFriends,
+  usernameChanged,
+} from './actions';
 import reducer from './reducer';
 import saga from './saga';
 import {
@@ -45,7 +62,7 @@ import UserInfo from '../../components/UserInfo';
 
 class HomePage extends React.Component {
   state = {
-    selectedUser: null,
+    // selectedUser: null,
     from: null,
     to: null,
   };
@@ -58,10 +75,15 @@ class HomePage extends React.Component {
   selectUser = (e, { value }) => {
     const { users, getData } = this.props;
     const user = users.find(user => user.get('id') === value);
-    this.setState({
-      selectedUser: user,
-    });
+    // this.setState({
+    //   selectedUser: user,
+    // });
     getData(user.get('id'));
+  };
+
+  onUsersDropdownSearchChange = (e, data) => {
+    const { usernameChanged } = this.props;
+    usernameChanged(data.searchQuery);
   };
 
   findUsers = (e, data) => {
@@ -70,8 +92,8 @@ class HomePage extends React.Component {
   };
 
   isUserTracked = id => {
-    const { users } = this.props;
-    const founded = users.find(u => u.get('id') === id);
+    const { allUsers } = this.props;
+    const founded = allUsers.find(u => u.get('id') === id);
     return founded;
   };
 
@@ -84,9 +106,11 @@ class HomePage extends React.Component {
       addUser,
       userOnlineData,
       getData,
-      getFriends,
+      // getFriends,
+      userName,
+      user,
     } = this.props;
-    const { selectedUser, from, to } = this.state;
+    const { from, to } = this.state;
 
     const usersOptions =
       users &&
@@ -107,15 +131,20 @@ class HomePage extends React.Component {
           <meta name="description" content="Description of HomePage" />
         </Helmet>
         <MainContainer>
-          <MainTitle as="h1">VK ONLINE TRACKER</MainTitle>
+          <MainTitle as="h1">Статистика посещаемости ВКонтакте</MainTitle>
 
           <SectionsDivider horizontal>Статистика</SectionsDivider>
-          <div>
-            Самая трудная вещь на свете — это думать своей собственной головой.
-            Вот, наверное, почему так мало людей этим занимаются. ©Генри Форд
+          <div style={{ marginBottom: '20px' }}>
+            Количество пользователей: {usersCount}
+            <Popup
+              trigger={
+                <a style={{ marginLeft: '25px' }} href="/">
+                  Посмотреть общую статистику
+                </a>
+              }
+              content="Нереализованный функционал"
+            />
           </div>
-          <br />
-          <div>Количество пользователей: {usersCount}</div>
 
           <Grid>
             <Grid.Column computer={8} mobile={16}>
@@ -123,25 +152,43 @@ class HomePage extends React.Component {
                 selection
                 search
                 fluid
+                value={userName}
                 loading={loading}
                 placeholder="Введите имя"
                 options={usersOptions}
                 onChange={this.selectUser}
                 selectOnBlur={false}
+                onSearchChange={this.onUsersDropdownSearchChange}
               />
             </Grid.Column>
             <Grid.Column computer={8} mobile={16}>
-              {selectedUser && (
+              {user && (
                 <Grid>
-                  <Grid.Column width={8}>
-                    <UserInfo user={selectedUser} />
+                  <Grid.Column width={5}>
+                    <UserInfo user={user} />
                   </Grid.Column>
-                  <Grid.Column width={8}>
-                    <Block>Друзей: {selectedUser.get('friendsCount')}</Block>
-                    <Button
-                      onClick={() => getFriends(selectedUser.get('id'))}
-                      content="Добавить друзей"
+                  <Grid.Column width={11}>
+                    {user.get('friendsCount') && (
+                      <Block>Друзей: {user.get('friendsCount')}</Block>
+                    )}
+                    <Popup
+                      trigger={
+                        <Block>Время в сети за сегодня: 1 ч. 15 мин.</Block>
+                      }
+                      content="Нереализованный функционал"
                     />
+
+                    <Popup
+                      trigger={
+                        <Block>Время в сети за неделю: 6 ч. 38 мин.</Block>
+                      }
+                      content="Нереализованный функционал"
+                    />
+
+                    {/* <Button
+                      onClick={() => getFriends(user.get('id'))}
+                      content="Добавить друзей"
+                    /> */}
                   </Grid.Column>
                 </Grid>
               )}
@@ -151,6 +198,7 @@ class HomePage extends React.Component {
             <Loader active={onlineData.loading} />
             {onlineData.data && (
               <div>
+                <div>График онлайна:</div>
                 <ChartWrapper>
                   <OnlineChart data={onlineData.data.onlineInfos} />
                 </ChartWrapper>
@@ -193,7 +241,7 @@ class HomePage extends React.Component {
                     <Button
                       onClick={() =>
                         getData(
-                          selectedUser.get('id'),
+                          user.get('id'),
                           from && Math.round(from),
                           to && Math.round(to),
                         )
@@ -212,10 +260,10 @@ class HomePage extends React.Component {
 
           <Grid>
             <Grid.Column computer={8} tablet={16}>
-              <Block>Вставьте ссылку</Block>
-              <Block>
+              <div>Вставьте ссылку</div>
+              <div>
                 <Input fluid onChange={this.findUsers} />
-              </Block>
+              </div>
             </Grid.Column>
             <Grid.Column computer={8} tablet={16}>
               {foundedUsers &&
@@ -231,7 +279,7 @@ class HomePage extends React.Component {
                     </div>
                     <img src={user.get('photo')} alt={user.get('firstName')} />
                     {!this.isUserTracked(user.get('id')) && (
-                      <div>
+                      <div style={{ marginTop: '10px' }}>
                         <Button onClick={() => addUser(user.get('id'))}>
                           Добавить
                         </Button>
@@ -256,13 +304,17 @@ HomePage.propTypes = {
   usersCount: PropTypes.number,
   foundedUsers: PropTypes.object,
   userOnlineData: PropTypes.object,
+  userName: PropTypes.string,
+  allUsers: PropTypes.object,
+  user: PropTypes.object,
 
   // actions
   getUsers: PropTypes.func,
   findUsers: PropTypes.func,
   addUser: PropTypes.func,
   getData: PropTypes.func,
-  getFriends: PropTypes.func,
+  // getFriends: PropTypes.func,
+  usernameChanged: PropTypes.func,
 };
 
 const mapStateToProps = createStructuredSelector({
@@ -271,6 +323,9 @@ const mapStateToProps = createStructuredSelector({
   usersCount: makeSelectUsersCount(),
   foundedUsers: makeSelectFoundedUsers(),
   userOnlineData: makeSelectUserOnlineData(),
+  userName: makeSelectUserName(),
+  allUsers: makeSelectAllUsers(),
+  user: makeSelectUser(),
 });
 
 function mapDispatchToProps(dispatch) {
@@ -281,6 +336,7 @@ function mapDispatchToProps(dispatch) {
       addUser,
       getData,
       getFriends,
+      usernameChanged,
     },
     dispatch,
   );

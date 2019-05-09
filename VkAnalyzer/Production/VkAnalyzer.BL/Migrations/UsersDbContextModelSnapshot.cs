@@ -4,7 +4,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using VkAnalyzer.BL.SQL;
+using VkAnalyzer.BL.Sql;
 
 namespace VkAnalyzer.BL.Migrations
 {
